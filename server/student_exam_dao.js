@@ -38,24 +38,20 @@ exports.getStudentExams = function (sid) {
 };
 
 /**
- * Insert an exam
+ * Insert an exam and students for that exam
  */
-exports.createExam = function (exam) {
+exports.createExam = function (studentId) {
   return new Promise((resolve, reject) => {
-    const sql =
-      "INSERT INTO student_exam(studentId, state, mark, cid,slotId) VALUES(?,0,?,?,?)";
-    db.run(
-      sql,
-      [exam.studentId, exam.state, exam.mark, exam.cid, exam.slotId],
-      function (err) {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          console.log(this.lastID);
-          resolve(this.lastID);
-        }
+    // let studentId = { ...studentId };
+    const sql = "INSERT INTO student_exam(studentId) VALUES(?)";
+    db.run(sql, [studentId], function (err) {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        console.log(this.lastID);
+        resolve(this.lastID);
       }
-    );
+    });
   });
 };

@@ -310,14 +310,14 @@ app.post("/api/addSession", (req, res) => {
 
 //POST /exam
 app.post("/api/createExam", (req, res) => {
-  const exam = req.body;
-  if (!exam) {
+  const studentId = req.body;
+  if (!studentId) {
     res.status(400).end();
   } else {
     const user = req.user && req.user.user;
-    exam.user = user;
+    // exam.user = user;
     studentexamDao
-      .createExam(exam)
+      .createExam(studentId)
       .then((id) => res.status(201).json({ id: id }))
       .catch((err) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
