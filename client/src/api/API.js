@@ -382,14 +382,14 @@ async function addSession(session) {
   });
 }
 
-async function createExam(exam) {
+async function createExam(studentId) {
   return new Promise((resolve, reject) => {
-    fetch(baseURL + "/addExam", {
+    fetch(baseURL + "/createExam", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(exam),
+      body: JSON.stringify(studentId),
     })
       .then((response) => {
         if (response.ok) {

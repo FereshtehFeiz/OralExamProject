@@ -22,6 +22,8 @@ class CreateExam extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
+      let selectedStudentsID = Object.assign({}, this.state);
+      this.props.createExam(selectedStudentsID);
       this.setState({
         submitted: true,
       });

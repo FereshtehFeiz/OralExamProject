@@ -25,15 +25,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
+      // tasks: [],
       exams: [],
       slots: [],
       studentsOfCourse: [],
-      projects: [],
-      filter: "all",
+      // projects: [],
+      // filter: "all",
       openMobileMenu: false,
-      editedTask: null,
-      role: "public",
+      // editedTask: null,
       selectedStudents: [],
       createSessionMode: "view",
       addSession: null,
@@ -42,6 +41,7 @@ class App extends React.Component {
       timeSlot: 0,
       sessionNumber: 1,
       session: null,
+      examId: null,
     };
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
@@ -116,8 +116,8 @@ class App extends React.Component {
               this.setState({
                 exams: null,
                 studentsOfCourse: studentsOfCourse,
-                tasks: tasks,
-                projects: this.getProjects(tasks),
+                // tasks: tasks,
+                // projects: this.getProjects(tasks),
                 authUser: user,
                 authErr: null,
                 authStudent: null,
@@ -177,104 +177,91 @@ class App extends React.Component {
       });
   };
 
-  getProjects(tasks) {
-    return [
-      ...new Set(
-        tasks.map((task) => {
-          if (task.project) return task.project;
-          else return null;
-        })
-      ),
-    ];
-  }
+  // getProjects(tasks) {
+  //   return [
+  //     ...new Set(
+  //       tasks.map((task) => {
+  //         if (task.project) return task.project;
+  //         else return null;
+  //       })
+  //     ),
+  //   ];
+  // }
 
   showSidebar = () => {
     this.setState((state) => ({ openMobileMenu: !state.openMobileMenu }));
   };
 
-  getPublicTasks = () => {
-    API.getPublicTasks()
-      .then((tasks) => this.setState({ tasks: tasks }))
-      .catch((errorObj) => {
-        this.handleErrors(errorObj);
-      });
-  };
-
-  filterTasks = (filter) => {
-    if (filter === "all") {
-      API.getTasks()
-        .then((tasks) =>
-          this.setState({
-            tasks: tasks,
-            filter: "all",
-            projects: this.getProjects(tasks),
-          })
-        )
-        .catch((errorObj) => {
-          this.handleErrors(errorObj);
-        });
-    } else {
-      API.getTasks(filter)
-        .then((tasks) => {
-          this.setState({
-            tasks: tasks,
-            filter: filter,
-            projects: this.getProjects(tasks),
-          });
-        })
-        .catch((errorObj) => {
-          this.handleErrors(errorObj);
-        });
-    }
-  };
-
-  addOrEditTask = (task) => {
-    if (!task.id) {
-      //ADD
-      API.addTask(task)
-        .then(() => {
-          //get the updated list of tasks from the server
-          API.getTasks().then((tasks) =>
-            this.setState({
-              tasks: tasks,
-              filter: "All",
-              projects: this.getProjects(tasks),
-            })
-          );
-        })
-        .catch((errorObj) => {
-          this.handleErrors(errorObj);
-        });
-    } else {
-      //UPDATE
-      API.updateTask(task)
-        .then(() => {
-          //get the updated list of tasks from the server
-          API.getTasks().then((tasks) =>
-            this.setState({
-              tasks: tasks,
-              filter: "All",
-              projects: this.getProjects(tasks),
-            })
-          );
-        })
-        .catch((errorObj) => {
-          this.handleErrors(errorObj);
-        });
-    }
-  };
-
-  // addSession = (exam) => {
-  //   //ADD Session
-  //   API.addSession(session)
-  //     .then(() => {
-  //       this.setState({
-  //         session: session,
-  //       });
-  //     })
+  // getPublicTasks = () => {
+  //   API.getPublicTasks()
+  //     .then((tasks) => this.setState({ tasks: tasks }))
   //     .catch((errorObj) => {
   //       this.handleErrors(errorObj);
   //     });
+  // };
+
+  // filterTasks = (filter) => {
+  //   if (filter === "all") {
+  //     API.getTasks()
+  //       .then((tasks) =>
+  //         this.setState({
+  //           tasks: tasks,
+  //           filter: "all",
+  //           projects: this.getProjects(tasks),
+  //         })
+  //       )
+  //       .catch((errorObj) => {
+  //         this.handleErrors(errorObj);
+  //       });
+  //   } else {
+  //     API.getTasks(filter)
+  //       .then((tasks) => {
+  //         this.setState({
+  //           tasks: tasks,
+  //           filter: filter,
+  //           projects: this.getProjects(tasks),
+  //         });
+  //       })
+  //       .catch((errorObj) => {
+  //         this.handleErrors(errorObj);
+  //       });
+  //   }
+  // };
+
+  // addOrEditTask = (task) => {
+  //   if (!task.id) {
+  //     //ADD
+  //     API.addTask(task)
+  //       .then(() => {
+  //         //get the updated list of tasks from the server
+  //         API.getTasks().then((tasks) =>
+  //           this.setState({
+  //             tasks: tasks,
+  //             filter: "All",
+  //             projects: this.getProjects(tasks),
+  //           })
+  //         );
+  //       })
+  //       .catch((errorObj) => {
+  //         this.handleErrors(errorObj);
+  //       });
+  //   } else {
+  //     //UPDATE
+  //     API.updateTask(task)
+  //       .then(() => {
+  //         //get the updated list of tasks from the server
+  //         API.getTasks().then((tasks) =>
+  //           this.setState({
+  //             tasks: tasks,
+  //             filter: "All",
+  //             projects: this.getProjects(tasks),
+  //           })
+  //         );
+  //       })
+  //       .catch((errorObj) => {
+  //         this.handleErrors(errorObj);
+  //       });
+  //   }
   // };
 
   addSession = (session) => {
@@ -290,26 +277,41 @@ class App extends React.Component {
       });
   };
 
-  editTask = (task) => {
-    this.setState({ editedTask: task });
-  };
-
-  deleteTask = (task) => {
-    API.deleteTask(task.id)
+  createExam = (studentId) => {
+    //ADD Exam and then get Exam ID
+    API.createExam(studentId)
       .then(() => {
-        //get the updated list of tasks from the server
-        API.getTasks().then((tasks) =>
-          this.setState({
-            tasks: tasks,
-            filter: "All",
-            projects: this.getProjects(tasks),
-          })
-        );
+        // API.getExamId().then((examId) => {
+        //   this.setState({
+        //     examId: examId,
+        //   });
+        // });
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
   };
+
+  // editTask = (task) => {
+  //   this.setState({ editedTask: task });
+  // };
+
+  // deleteTask = (task) => {
+  //   API.deleteTask(task.id)
+  //     .then(() => {
+  //       //get the updated list of tasks from the server
+  //       API.getTasks().then((tasks) =>
+  //         this.setState({
+  //           tasks: tasks,
+  //           filter: "All",
+  //           projects: this.getProjects(tasks),
+  //         })
+  //       );
+  //     })
+  //     .catch((errorObj) => {
+  //       this.handleErrors(errorObj);
+  //     });
+  // };
 
   getExamSlots = (exam) => {
     API.getExamSlots(exam.id)
@@ -516,6 +518,8 @@ class App extends React.Component {
                     setNumberofStudents={this.setNumberofStudents}
                     setTimeSlot={this.setTimeSlot}
                     setTotalTimeSlot={this.setTotalTimeSlot}
+                    exam={this.state.exam}
+                    createExam={this.createExam}
                   />
                 </Col>
               </Row>
