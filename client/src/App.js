@@ -41,7 +41,7 @@ class App extends React.Component {
       timeSlot: 0,
       sessionNumber: 1,
       session: null,
-      examId: null,
+      examId: null
     };
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
@@ -538,16 +538,15 @@ class App extends React.Component {
                   />
                 </Col>
               </Row>
-              <Link to="/addSession">
+              {/* <Link to="/addSession">
                 <Button
                   variant="success"
                   size="lg"
                   className="fixed-right-bottom"
                   onClick={this.handleAddSession}
-                >
-                  &#43; Add Session
+                >&#43; Add Session
                 </Button>
-              </Link>
+              </Link> */}
             </Route>
             <Route path="/studentLogin">
               <Row className="vheight-100">

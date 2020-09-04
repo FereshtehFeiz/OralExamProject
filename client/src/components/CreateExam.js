@@ -14,8 +14,12 @@ class CreateExam extends React.Component {
       checkedCount: 0,
       totalTimeSlot: 0,
       selectedStudentsID: [],
+      timeSlot: 10
     };
   }
+
+
+
   handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -24,18 +28,17 @@ class CreateExam extends React.Component {
     } else {
       let selectedStudentsID = Object.assign({}, this.state);
       this.props.createExam(selectedStudentsID);
-      this.setState({
-        submitted: true,
-      });
+      this.setState({ submitted: true });
     }
     this.props.setNumberofStudents(this.state.checkedCount);
     this.props.setTimeSlot(this.state.timeSlot);
     this.props.setTotalTimeSlot(this.state.timeSlot, this.state.checkedCount);
   };
+
+
+
   updateField = (name, value) => {
-    this.setState({
-      [name]: value,
-    });
+    this.setState({ [name]: value });
   };
 
   onCheckChange = (event) => {
@@ -45,19 +48,14 @@ class CreateExam extends React.Component {
     // console.log(value);
     const name = target.name;
 
-    this.setState({
-      [name]: value,
-    });
+    this.setState({ [name]: value });
 
     if (target.type === "checkbox") {
       if (value === true) {
         // add student ID to list
         this.setState((state) => {
           const selectedStudentsID = state.selectedStudentsID.concat([name]);
-
-          return {
-            selectedStudentsID,
-          };
+          return { selectedStudentsID };
         });
 
         // access to the previous value by means of prevState
@@ -100,12 +98,7 @@ class CreateExam extends React.Component {
               onChange={this.onCheckChange}
             />
 
-            <label
-              className="custom-control-label"
-              htmlFor={"check-t" + s.studentId}
-            >
-              {""}
-            </label>
+            <label className="custom-control-label" htmlFor={"check-t" + s.studentId}>{""}</label>
           </div>
         </td>
       </tr>
@@ -146,11 +139,9 @@ class CreateExam extends React.Component {
                 <Form.Control
                   type="number"
                   name="timeSlot"
-                  value={this.state.timeSlot}
-                  defaultValue="0"
-                  onChange={(ev) =>
-                    this.updateField(ev.target.name, parseInt(ev.target.value))
-                  }
+                  // value={this.state.timeSlot}
+                  defaultValue={this.state.timeSlot}
+                  onChange={(ev) => this.updateField(ev.target.name, parseInt(ev.target.value))}
                   required
                   focused
                 ></Form.Control>
