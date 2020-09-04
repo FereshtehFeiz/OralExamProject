@@ -39,6 +39,7 @@ class CreateExam extends React.Component {
   onCheckChange = (event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
+
     // console.log(value);
     const name = target.name;
 
@@ -48,6 +49,15 @@ class CreateExam extends React.Component {
 
     if (target.type === "checkbox") {
       if (value === true) {
+        // add student ID to list
+        this.setState((state) => {
+          const selectedStudentsID = state.selectedStudentsID.concat([name]);
+
+          return {
+            selectedStudentsID,
+          };
+        });
+
         // access to the previous value by means of prevState
         this.setState((prevState) => {
           return {
@@ -55,6 +65,15 @@ class CreateExam extends React.Component {
           };
         });
       } else {
+        // remove student ID from list
+        this.setState((state) => {
+          var index = this.state.selectedStudentsID.indexOf([name]);
+          const selectedStudentsID = state.selectedStudentsID.splice(index, 1);
+          return {
+            selectedStudentsID,
+          };
+        });
+
         this.setState((prevState) => {
           return {
             checkedCount: prevState.checkedCount - 1,
