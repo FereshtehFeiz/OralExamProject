@@ -6,9 +6,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Collapse from "react-bootstrap/Collapse";
-import Filters from "./components/Filters";
-import TodoList from "./components/TodoList";
-import TodoForm from "./components/TodoForm";
 import LoginForm from "./components/LoginForm";
 import StudentLogin from "./components/StudentLogin";
 import SelectRole from "./components/SelectRole";
@@ -16,6 +13,7 @@ import CreateExam from "./components/CreateExam";
 import StudentExams from "./components/StudentExams";
 import DefineSession from "./components/DefineSession";
 import BookedSlots from "./components/BookedSlots";
+import OralExamList from "./components/OralExamList";
 import API from "./api/API";
 import { Redirect, Route, Link } from "react-router-dom";
 import { Switch } from "react-router";
@@ -35,7 +33,6 @@ class App extends React.Component {
       openMobileMenu: false,
       // editedTask: null,
       selectedStudents: [],
-      createSessionMode: "view",
       addSession: null,
       studentsNumber: 0,
       checkedCount: 0,
@@ -325,21 +322,29 @@ class App extends React.Component {
   //     });
   // };
 
-  getExamSlots = (exam) => {
-    API.getExamSlots(exam.id)
-      .then((slots) => {
-        this.setState({
-          slots: slots,
-        });
-      })
+  // getExamSlots = (exam) => {
+  //   API.getExamSlots(exam.id)
+  //     .then((slots) => {
+  //       this.setState({
+  //         slots: slots,
+  //       });
+  //     })
+  //     .catch((errorObj) => {
+  //       this.handleErrors(errorObj);
+  //     });
+  // };
+
+  checkStudentId = (student) => {
+    API.isStudent(student.id)
+      .then((studentId) => this.setState({ studentId: studentId }))
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
   };
 
-  checkStudentId = (student) => {
-    API.isStudent(student.id)
-      .then((studentId) => this.setState({ studentId: studentId }))
+  getOralExamTimeSlots = () => {
+    API.getOralExamTimeSlots(this.state.courseId)
+      .then((timeslots) => this.setState({ timeslots: timeslots }))
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
@@ -380,6 +385,7 @@ class App extends React.Component {
           showSidebar={this.showSidebar}
           // getPublicTasks={this.getPublicTasks}
           getStudentExams={this.getStudentExams}
+          getOralExamTimeSlots={this.getOralExamTimeSlots}
         />
 
         <Container fluid>
@@ -580,6 +586,19 @@ class App extends React.Component {
                     exams={this.state.exams}
                     getExamSlots={this.getExamSlots}
                     getStudentExams={this.getStudentExams}
+                  />
+                </Col>
+              </Row>
+            </Route>
+
+            <Route path="/examSlots">
+              <Row className="vheight-100">
+                <Col sm={4}></Col>
+                <Col sm={4} className="below-nav">
+                  <h4>List of slots for taking oral exam</h4>
+                  <OralExamList
+                    timeslots={this.state.timeslots}
+                    updateMark={this.updateMark}
                   />
                 </Col>
               </Row>

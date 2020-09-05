@@ -41,7 +41,11 @@ const Header = (props) => {
                 </Navbar.Brand>
 
                 <Nav className="mr-auto">
-                  <Nav.Link as={NavLink} to="/takeExam">
+                  <Nav.Link
+                    as={NavLink}
+                    to="/examSlots"
+                    onClick={() => props.getOralExamTimeSlots()}
+                  >
                     Take Exam
                   </Nav.Link>
                   <Nav.Link as={NavLink} to="/results">

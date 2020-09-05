@@ -1,31 +1,32 @@
 "use strict";
 
-const ExamTimeSlot = require("./oralTest");
+const OralTimeSlot = require("./timeslot");
 const db = require("./db");
 const moment = require("moment");
 
 const createExamSlots = function (row) {
-  return new ExamTimeSlot(
+  return new OralTimeSlot(
     row.startTime,
     row.date,
     row.state,
     row.studentId,
     row.mark,
-    row.attendance
+    row.attendance,
+    row.cid
   );
 };
 
 /**
  * Get slots to take oral exam
  */
-exports.getExamSlots = function (courseId) {
+exports.getExamSlots = function (cid) {
   return new Promise((resolve, reject) => {
     const sql =
       "SELECT startTime,date,slots.state,studentId,mark,attendance" +
       "FROM slots" +
       "INNER JOIN student_exam on student_exam.eid = slots.eid" +
       "WHERE slots.state = 0 and slots.cid = ?;";
-    db.all(sql, [courseId], (err, rows) => {
+    db.all(sql, [cid], (err, rows) => {
       if (err) {
         reject(err);
       } else {
