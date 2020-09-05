@@ -248,13 +248,14 @@ app.post("/api/createExam", (req, res) => {
 
 //GET /oral time slots for taking exam by teacher for given course Id
 app.get("/api/examSlots/:courseId", (req, res) => {
-  console.log(req.param.courseId);
+  console.log(req.params.courseId);
   timeslotDao
     .getExamSlots(req.params.courseId)
     .then((timeslots) => {
       res.json(timeslots);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({
         errors: [{ msg: err }],
       });

@@ -1,28 +1,39 @@
 import React, { useEffect } from "react";
 import OralExamItem from "./OralExamItem";
-import ListGroup from "react-bootstrap/ListGroup";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
+import Table from "react-bootstrap/Table";
 
 const OralExamList = (props) => {
-  let { timeslots, updateMark } = props;
+  let { OralExams, updateMark } = props;
 
   return (
     <AuthContext.Consumer>
       {(context) => (
         <>
           {context.authErr && <Redirect to="/login"></Redirect>}
-
-          {timeslots && (
-            <ListGroup as="ul" variant="flush">
-              {timeslots.map((timeslot) => (
-                <OralExamItem
-                  key={timeslot.id}
-                  timeslot={timeslot}
-                  updateMark={updateMark}
-                />
+          {OralExams && (
+            <Table striped bordered hover variant="white">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Date</th>
+                  <th>Start Time</th>
+                  <th>Attendance</th>
+                  <th>Mark</th>
+                  <th>Update Mark</th>
+                </tr>
+              </thead>
+              {OralExams.map((oralExamItem) => (
+                <tbody>
+                  <OralExamItem
+                    key={oralExamItem.id}
+                    oralExamItem={oralExamItem}
+                    updateMark={updateMark}
+                  />
+                </tbody>
               ))}
-            </ListGroup>
+            </Table>
           )}
         </>
       )}

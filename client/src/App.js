@@ -25,6 +25,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       // tasks: [],
+      OralExams: [],
       exams: [],
       slots: [],
       studentsOfCourse: [],
@@ -344,7 +345,7 @@ class App extends React.Component {
 
   getOralExamTimeSlots = () => {
     API.getOralExamTimeSlots(this.state.courseId)
-      .then((timeslots) => this.setState({ timeslots: timeslots }))
+      .then((OralExams) => this.setState({ OralExams: OralExams }))
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
@@ -597,7 +598,7 @@ class App extends React.Component {
                 <Col sm={4} className="below-nav">
                   <h4>List of slots for taking oral exam</h4>
                   <OralExamList
-                    timeslots={this.state.timeslots}
+                    OralExams={this.state.OralExams}
                     updateMark={this.updateMark}
                   />
                 </Col>

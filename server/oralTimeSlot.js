@@ -1,10 +1,10 @@
-class OralTimeSlot {
+class oralTimeSlot {
   constructor(
     slotId,
     startTime,
     date,
-    state,
     studentId,
+    state,
     mark,
     attendance,
     cid
@@ -12,12 +12,12 @@ class OralTimeSlot {
     if (slotId) this.slotId = slotId;
     this.startTime = startTime;
     this.date = date;
-    this.state = state;
     this.studentId = studentId;
+    this.state = state;
     this.mark = mark;
     this.attendance = attendance;
     this.cid = cid;
   }
 }
 
-module.exports = OralTimeSlot;
+module.exports = oralTimeSlot;
