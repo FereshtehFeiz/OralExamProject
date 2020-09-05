@@ -15,6 +15,17 @@ const createTimeSlot = function (row) {
   );
 };
 
+const createExamSlots = function (row) {
+  return new ExamTimeSlot(
+    row.startTime,
+    row.date,
+    row.state,
+    row.studentId,
+    row.mark,
+    row.attendance
+  );
+};
+
 exports.createExamTimeSlot = function (timeSlot) {
   if (timeSlot.date) {
     timeSlot.date = moment(timeSlot.date).format("YYYY-MM-DD HH:mm");
@@ -42,5 +53,26 @@ exports.createExamTimeSlot = function (timeSlot) {
         }
       }
     );
+  });
+};
+
+/**
+ * Get slots to take oral exam
+ */
+exports.getExamSlots = function (courseId) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "SELECT startTime,date,slots.state,studentId,mark,attendance" +
+      "FROM slots" +
+      "INNER JOIN student_exam on student_exam.eid = slots.eid" +
+      "WHERE slots.state = 0 and slots.cid = ?;";
+    db.all(sql, [courseId], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        let ExamSlots = rows.map((row) => createExamSlots(row));
+        resolve(ExamSlots);
+      }
+    });
   });
 };

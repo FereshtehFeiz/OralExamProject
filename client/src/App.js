@@ -141,9 +141,9 @@ class App extends React.Component {
         authUser: null,
         authErr: null,
       });
-      API.getTasks().catch((errorObj) => {
-        this.handleErrorsSid(errorObj);
-      });
+      // API.getTasks().catch((errorObj) => {
+      //   this.handleErrorsSid(errorObj);
+      // });
     });
   };
 
@@ -402,7 +402,7 @@ class App extends React.Component {
               </Row>
             </Route>
 
-            <Route path="/public">
+            {/* <Route path="/public">
               <Row className="vheight-100">
                 <Col sm={12} className="below-nav">
                   <h5>
@@ -415,9 +415,9 @@ class App extends React.Component {
                   />
                 </Col>
               </Row>
-            </Route>
+            </Route> */}
 
-            <Route path="/tasks">
+            {/* <Route path="/tasks">
               <Row className="vheight-100">
                 <Switch>
                   <Route
@@ -515,7 +515,7 @@ class App extends React.Component {
                   </Row>
                 );
               }}
-            />
+            /> */}
 
             {/* <Route>
               <Redirect to="/students" />
