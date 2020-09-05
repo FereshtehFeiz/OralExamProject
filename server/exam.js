@@ -1,7 +1,8 @@
 class Exam {
-  constructor(eid, name) {
+  constructor(eid, cid, slotDuration) {
     if (eid) this.eid = eid;
-    this.name = name;
+    this.cid = cid;
+    this.slotDuration = slotDuration;
   }
 }
 

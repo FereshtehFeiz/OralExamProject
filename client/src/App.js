@@ -54,7 +54,7 @@ class App extends React.Component {
     //check if the user is authenticated
     API.isAuthenticated()
       .then((user) => {
-        this.setState({ authUser: user });
+        this.setState({ authUser: user, courseId: user.courseId });
       })
       .catch((err) => {
         this.setState({ authErr: err.errorObj });
@@ -115,6 +115,7 @@ class App extends React.Component {
           this.setState({
             exams: null,
             studentsOfCourse: studentsOfCourse,
+            courseId: user.courseId,
             // tasks: tasks,
             // projects: this.getProjects(tasks),
             authUser: user,
@@ -365,6 +366,7 @@ class App extends React.Component {
     const value = {
       authUser: this.state.authUser,
       authErr: this.state.authErr,
+      courseId: this.state.courseId,
       loginUser: this.login,
       logoutUser: this.logout,
       authStudent: this.state.authStudent,
@@ -532,6 +534,7 @@ class App extends React.Component {
                     setTotalTimeSlot={this.setTotalTimeSlot}
                     exam={this.state.exam}
                     createExam={this.createExam}
+                    courseId={this.state.courseId}
                   />
                 </Col>
               </Row>

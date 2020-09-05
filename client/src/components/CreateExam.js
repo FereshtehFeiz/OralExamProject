@@ -10,14 +10,11 @@ import Form from "react-bootstrap/Form";
 class CreateExam extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       checkedCount: 0,
       totalTimeSlot: 0,
       selectedStudentsID: [],
-      state: 0,
-      mark: "",
-      cid: null,
-      slotId: null,
     };
   }
   handleSubmit = (event) => {
@@ -26,7 +23,9 @@ class CreateExam extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-      let exam = Object.assign({}, this.state);
+      // let courseId = Object.assign({}, this.state);
+      // let timeSlot = Object.assign({}, this.state);
+      let exam = Object.assign({}, this.state.timeSlot, this.state.courseId);
       this.props.createExam(exam);
       this.setState({
         submitted: true,
