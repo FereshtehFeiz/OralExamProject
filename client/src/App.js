@@ -42,7 +42,7 @@ class App extends React.Component {
       timeSlot: 0,
       sessionNumber: 1,
       session: null,
-      examId: null
+      examId: null,
     };
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
@@ -151,19 +151,19 @@ class App extends React.Component {
   studentlogin = (sid) => {
     API.studentLogin(sid)
       .then((student) => {
-        API.getBookedSlots()
-          .then((bookedSlots) => {
-            this.setState({
-              authStudent: student,
-              bookedSlots: bookedSlots,
-              authUser: null,
-              authErr: null,
-              invalidSid: null,
-            });
-          })
-          .catch((errorObj) => {
-            this.handleErrors(errorObj);
-          });
+        // API.getBookedSlots()
+        //   .then((bookedSlots) => {
+        this.setState({
+          authStudent: student,
+          // bookedSlots: bookedSlots,
+          authUser: null,
+          authErr: null,
+          invalidSid: null,
+        });
+        // })
+        // .catch((errorObj) => {
+        //   this.handleErrors(errorObj);
+        // });
 
         this.props.history.push("/exams");
       })

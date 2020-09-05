@@ -2,7 +2,6 @@
 
 const Student = require("./student");
 const Exam = require("./exam");
-const TimeSlot = require("./timeSlot");
 
 const db = require("./db");
 
@@ -12,17 +11,6 @@ const createStudent = function (row) {
 
 const createStudentExams = function (row) {
   return new Exam(row.eid, row.name);
-};
-
-const createBookingSlots = function (row) {
-  return new TimeSlot(
-    row.slotId,
-    row.name,
-    row.state,
-    row.date,
-    row.startTime,
-    row.mark
-  );
 };
 
 /**

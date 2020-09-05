@@ -8,6 +8,7 @@ const studentDao = require("./student_dao");
 const studentcourseDao = require("./student_course_dao ");
 const examDao = require("./exam_dao");
 const sessionDao = require("./session_dao");
+const timeslotDao = require("./timeslot_dao");
 const morgan = require("morgan"); // logging middleware
 const jwt = require("express-jwt");
 const jsonwebtoken = require("jsonwebtoken");
@@ -236,6 +237,7 @@ app.post("/api/createExam", (req, res) => {
   } else {
     const user = req.user && req.user.courseId;
     exam.user = user;
+    console.log(exam, exam.user);
     examDao
       .createExam(exam)
       .then((id) => res.status(201).json({ id: id }))
@@ -243,6 +245,21 @@ app.post("/api/createExam", (req, res) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
       });
   }
+});
+
+//GET /oral time slots for taking exam by teacher for given course Id
+app.get("/api/examSlots", (req, res) => {
+  const courseId = req.user && req.user.courseId;
+  timeslotDao
+    .getExamSlots(courseId)
+    .then((timeslots) => {
+      res.json(timeslots);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        errors: [{ msg: err }],
+      });
+    });
 });
 
 //activate server

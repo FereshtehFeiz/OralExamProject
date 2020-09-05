@@ -4,6 +4,7 @@ import Exam from "./Exam";
 import StudentCourse from "./StudentCourse";
 import StudentExam from "./StudentExam";
 import TimeSlot from "./TimeSlot";
+import OralTimeSlot from "./OralTimeSlot";
 import Session from "./Session";
 
 const baseURL = "/api";
@@ -280,6 +281,30 @@ async function getBookedSlots() {
   }
 }
 
+async function getExamSlotsForTeacher() {
+  let url = "/examSlots";
+  const response = await fetch(baseURL + url);
+  const slotsJson = await response.json();
+  if (response.ok) {
+    //return tasksJson.map((t) => Task.from(t));
+    return slotsJson.map(
+      (t) =>
+        new OralTimeSlot(
+          t.slotId,
+          t.startTime,
+          t.date,
+          t.state,
+          t.studentId,
+          t.mark,
+          t.attendance
+        )
+    );
+  } else {
+    let err = { status: response.status, errObj: slotsJson };
+    throw err; // An object with the error coming from the server
+  }
+}
+
 const API = {
   isAuthenticated,
   userLogin,
@@ -293,5 +318,6 @@ const API = {
   addSession,
   createExam,
   getBookedSlots,
+  getExamSlotsForTeacher,
 };
 export default API;

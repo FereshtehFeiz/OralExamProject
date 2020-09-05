@@ -15,11 +15,9 @@ class CreateExam extends React.Component {
       checkedCount: 0,
       totalTimeSlot: 0,
       selectedStudentsID: [],
-      timeSlot: 10
+      timeSlot: null,
     };
   }
-
-
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -27,25 +25,18 @@ class CreateExam extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-      let selectedStudentsID = Object.assign({}, this.state);
-      this.props.createExam(selectedStudentsID);
-      this.setState({ submitted: true });
-
-      // let courseId = Object.assign({}, this.state);
-      // let timeSlot = Object.assign({}, this.state);
-      let exam = Object.assign({}, this.state.timeSlot, this.state.courseId);
-      this.props.createExam(exam);
+      this.props.createExam({
+        cid: this.props.courseId,
+        slotDuration: this.state.timeSlot,
+      });
       this.setState({
         submitted: true,
       });
-
     }
     this.props.setNumberofStudents(this.state.checkedCount);
     this.props.setTimeSlot(this.state.timeSlot);
     this.props.setTotalTimeSlot(this.state.timeSlot, this.state.checkedCount);
   };
-
-
 
   updateField = (name, value) => {
     this.setState({ [name]: value });
@@ -108,7 +99,12 @@ class CreateExam extends React.Component {
               onChange={this.onCheckChange}
             />
 
-            <label className="custom-control-label" htmlFor={"check-t" + s.studentId}>{""}</label>
+            <label
+              className="custom-control-label"
+              htmlFor={"check-t" + s.studentId}
+            >
+              {""}
+            </label>
           </div>
         </td>
       </tr>
@@ -151,7 +147,9 @@ class CreateExam extends React.Component {
                   name="timeSlot"
                   // value={this.state.timeSlot}
                   defaultValue={this.state.timeSlot}
-                  onChange={(ev) => this.updateField(ev.target.name, parseInt(ev.target.value))}
+                  onChange={(ev) =>
+                    this.updateField(ev.target.name, parseInt(ev.target.value))
+                  }
                   required
                   focused
                 ></Form.Control>
