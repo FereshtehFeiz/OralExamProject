@@ -27,11 +27,10 @@ class CreateExam extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-<<<<<<< HEAD
       let selectedStudentsID = Object.assign({}, this.state);
       this.props.createExam(selectedStudentsID);
       this.setState({ submitted: true });
-=======
+
       // let courseId = Object.assign({}, this.state);
       // let timeSlot = Object.assign({}, this.state);
       let exam = Object.assign({}, this.state.timeSlot, this.state.courseId);
@@ -39,7 +38,7 @@ class CreateExam extends React.Component {
       this.setState({
         submitted: true,
       });
->>>>>>> 5c1490b5a4b7d89a9ca7279cebf967de80521a6b
+
     }
     this.props.setNumberofStudents(this.state.checkedCount);
     this.props.setTimeSlot(this.state.timeSlot);
