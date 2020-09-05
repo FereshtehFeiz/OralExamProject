@@ -1,5 +1,5 @@
 class StudentCourse {
-  constructor(fullname, studentId, cid) {
+  constructor(cid, fullname, studentId) {
     if (cid) {
       this.cid = cid;
     }

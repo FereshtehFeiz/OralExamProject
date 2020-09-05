@@ -14,6 +14,10 @@ class CreateExam extends React.Component {
       checkedCount: 0,
       totalTimeSlot: 0,
       selectedStudentsID: [],
+      state: 0,
+      mark: "",
+      cid: null,
+      slotId: null,
     };
   }
   handleSubmit = (event) => {
@@ -22,8 +26,8 @@ class CreateExam extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-      let selectedStudentsID = Object.assign({}, this.state);
-      this.props.createExam(selectedStudentsID);
+      let exam = Object.assign({}, this.state);
+      this.props.createExam(exam);
       this.setState({
         submitted: true,
       });

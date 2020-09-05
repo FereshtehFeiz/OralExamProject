@@ -141,7 +141,7 @@ const Header = (props) => {
                 </Navbar.Brand>
 
                 <Nav className="mr-auto">
-                  <Nav.Link as={NavLink} to="/booking">
+                  <Nav.Link as={NavLink} to="/bookExam">
                     Book Exam
                   </Nav.Link>
                   <Nav.Link as={NavLink} to="/bookings">

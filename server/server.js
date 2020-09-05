@@ -72,8 +72,8 @@ app.post("/api/studentlogin", (req, res) => {
 });
 
 //get exams of student
-app.get("/api/studentexams", (req, res) => {
-  // const student = req.student && req.student.sid;
+app.get("/api/exams", (req, res) => {
+  // const sid = req.user && req.user.user;
   studentexamDao
     .getStudentExams()
     .then((exams) => {
@@ -86,7 +86,7 @@ app.get("/api/studentexams", (req, res) => {
     });
 });
 
-//GET /tasks/<taskId>
+//GET /exams/<examId>
 app.get("/api/exams/:examId", (req, res) => {
   studentexamDao
     .getExamSlots(req.params.examId)
@@ -152,18 +152,18 @@ app.post("/api/logout", (req, res) => {
 });
 
 //GET /tasks/public
-app.get("/api/tasks/public", (req, res) => {
-  taskDao
-    .getPublicTasks()
-    .then((tasks) => {
-      res.json(tasks);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ msg: err }],
-      });
-    });
-});
+// app.get("/api/tasks/public", (req, res) => {
+//   taskDao
+//     .getPublicTasks()
+//     .then((tasks) => {
+//       res.json(tasks);
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         errors: [{ msg: err }],
+//       });
+//     });
+// });
 
 // For the rest of the code, all APIs require authentication
 app.use(
@@ -196,85 +196,85 @@ app.get("/api/user", (req, res) => {
 });
 
 //GET /tasks
-app.get("/api/tasks", (req, res) => {
-  const user = req.user && req.user.user;
-  taskDao
-    .getTasks(user, req.query.filter)
-    .then((tasks) => {
-      res.json(tasks);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ msg: err }],
-      });
-    });
-});
+// app.get("/api/tasks", (req, res) => {
+//   const user = req.user && req.user.user;
+//   taskDao
+//     .getTasks(user, req.query.filter)
+//     .then((tasks) => {
+//       res.json(tasks);
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         errors: [{ msg: err }],
+//       });
+//     });
+// });
 
 //GET /tasks/<taskId>
-app.get("/api/tasks/:taskId", (req, res) => {
-  taskDao
-    .getTask(req.params.taskId)
-    .then((course) => {
-      if (!course) {
-        res.status(404).send();
-      } else {
-        res.json(course);
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ param: "Server", msg: err }],
-      });
-    });
-});
+// app.get("/api/tasks/:taskId", (req, res) => {
+//   taskDao
+//     .getTask(req.params.taskId)
+//     .then((course) => {
+//       if (!course) {
+//         res.status(404).send();
+//       } else {
+//         res.json(course);
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         errors: [{ param: "Server", msg: err }],
+//       });
+//     });
+// });
 
 //POST /tasks
-app.post("/api/tasks", (req, res) => {
-  const task = req.body;
-  if (!task) {
-    res.status(400).end();
-  } else {
-    const user = req.user && req.user.user;
-    task.user = user;
-    taskDao
-      .createTask(task)
-      .then((id) => res.status(201).json({ id: id }))
-      .catch((err) => {
-        res.status(500).json({ errors: [{ param: "Server", msg: err }] });
-      });
-  }
-});
+// app.post("/api/tasks", (req, res) => {
+//   const task = req.body;
+//   if (!task) {
+//     res.status(400).end();
+//   } else {
+//     const user = req.user && req.user.user;
+//     task.user = user;
+//     taskDao
+//       .createTask(task)
+//       .then((id) => res.status(201).json({ id: id }))
+//       .catch((err) => {
+//         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
+//       });
+//   }
+// });
 
 //DELETE /tasks/<taskId>
-app.delete("/api/tasks/:taskId", (req, res) => {
-  taskDao
-    .deleteTask(req.params.taskId)
-    .then((result) => res.status(204).end())
-    .catch((err) =>
-      res.status(500).json({
-        errors: [{ param: "Server", msg: err }],
-      })
-    );
-});
+// app.delete("/api/tasks/:taskId", (req, res) => {
+//   taskDao
+//     .deleteTask(req.params.taskId)
+//     .then((result) => res.status(204).end())
+//     .catch((err) =>
+//       res.status(500).json({
+//         errors: [{ param: "Server", msg: err }],
+//       })
+//     );
+// });
 
 //PUT /tasks/<taskId>
-app.put("/api/tasks/:taskId", (req, res) => {
-  if (!req.body.id) {
-    res.status(400).end();
-  } else {
-    const task = req.body;
-    const user = req.user && req.user.user;
-    task.user = user;
-    taskDao
-      .updateTask(req.params.taskId, task)
-      .then((result) => res.status(200).end())
-      .catch((err) =>
-        res.status(500).json({
-          errors: [{ param: "Server", msg: err }],
-        })
-      );
-  }
-});
+// app.put("/api/tasks/:taskId", (req, res) => {
+//   if (!req.body.id) {
+//     res.status(400).end();
+//   } else {
+//     const task = req.body;
+//     const user = req.user && req.user.user;
+//     task.user = user;
+//     taskDao
+//       .updateTask(req.params.taskId, task)
+//       .then((result) => res.status(200).end())
+//       .catch((err) =>
+//         res.status(500).json({
+//           errors: [{ param: "Server", msg: err }],
+//         })
+//       );
+//   }
+// });
 
 //get students of the course to take exam
 app.get("/api/studentsofcourse", (req, res) => {
@@ -323,6 +323,21 @@ app.post("/api/createExam", (req, res) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
       });
   }
+});
+
+//GET /bookedSlots
+app.get("/api/bookedSlots", (req, res) => {
+  const user = req.user && req.user.user;
+  taskDao
+    .getTasks(user, req.query.filter)
+    .then((tasks) => {
+      res.json(tasks);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        errors: [{ msg: err }],
+      });
+    });
 });
 
 //activate server

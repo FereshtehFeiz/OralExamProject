@@ -6,7 +6,7 @@ const Student = require("./student");
 const db = require("./db");
 
 const createStudentCourse = function (row) {
-  return new StudentCourse(row.fullname, row.studentId, row.cid);
+  return new StudentCourse(row.cid, row.fullname, row.studentId);
 };
 /**
  * Get students of given Course ID
