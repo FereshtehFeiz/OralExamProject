@@ -1,11 +1,9 @@
 class StudentExam {
-  constructor(eid, name, sid) {
+  constructor(eid, name) {
     if (this.eid) {
       this.eid = eid;
     }
     this.name = name;
-    this.sid = sid;
-    this.eid = eid;
   }
 
   /**

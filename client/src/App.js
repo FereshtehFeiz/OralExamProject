@@ -15,6 +15,7 @@ import SelectRole from "./components/SelectRole";
 import CreateExam from "./components/CreateExam";
 import StudentExams from "./components/StudentExams";
 import DefineSession from "./components/DefineSession";
+import BookedSlots from "./components/BookedSlots";
 import API from "./api/API";
 import { Redirect, Route, Link } from "react-router-dom";
 import { Switch } from "react-router";
@@ -53,7 +54,7 @@ class App extends React.Component {
     //check if the user is authenticated
     API.isAuthenticated()
       .then((user) => {
-        this.setState({ authUser: user });
+        this.setState({ authUser: user, courseId: user.courseId });
       })
       .catch((err) => {
         this.setState({ authErr: err.errorObj });
@@ -95,14 +96,14 @@ class App extends React.Component {
       this.setState({
         authUser: null,
         authErr: null,
-        tasks: null,
+        // tasks: null,
         studentsOfCourse: [],
         authStudent: null,
         invalidSid: null,
       });
-      API.getTasks().catch((errorObj) => {
-        this.handleErrors(errorObj);
-      });
+      // API.getTasks().catch((errorObj) => {
+      //   this.handleErrors(errorObj);
+      // });
     });
   };
 
@@ -110,25 +111,20 @@ class App extends React.Component {
   login = (username, password) => {
     API.userLogin(username, password)
       .then((user) => {
-        API.getTasks()
-          .then((tasks) => {
-            API.getStudentsOfCourse().then((studentsOfCourse) => {
-              this.setState({
-                exams: null,
-                studentsOfCourse: studentsOfCourse,
-                // tasks: tasks,
-                // projects: this.getProjects(tasks),
-                authUser: user,
-                authErr: null,
-                authStudent: null,
-                invalidSid: null,
-              });
-            });
-            this.props.history.push("/createExam");
-          })
-          .catch((errorObj) => {
-            this.handleErrors(errorObj);
+        API.getStudentsOfCourse().then((studentsOfCourse) => {
+          this.setState({
+            exams: null,
+            studentsOfCourse: studentsOfCourse,
+            courseId: user.courseId,
+            // tasks: tasks,
+            // projects: this.getProjects(tasks),
+            authUser: user,
+            authErr: null,
+            authStudent: null,
+            invalidSid: null,
           });
+        });
+        this.props.history.push("/createExam");
       })
       .catch((errorObj) => {
         const err0 = errorObj.errors[0];
@@ -155,27 +151,43 @@ class App extends React.Component {
   studentlogin = (sid) => {
     API.studentLogin(sid)
       .then((student) => {
-        API.getStudentExams()
-          .then((exams) => {
+        API.getBookedSlots()
+          .then((bookedSlots) => {
             this.setState({
-              exams: exams,
               authStudent: student,
+              bookedSlots: bookedSlots,
               authUser: null,
               authErr: null,
               invalidSid: null,
             });
-
-            this.props.history.push("/exams");
           })
           .catch((errorObj) => {
             this.handleErrors(errorObj);
           });
+
+        this.props.history.push("/exams");
       })
       .catch((errorObj) => {
         const err0 = errorObj.errors[0];
         this.setState({ invalidSid: err0 });
       });
   };
+
+  // getStudentExams = () => {
+  //   API.getStudentExams()
+  //     .then((exams) => this.setState({ exams: exams }))
+  //     .catch((errorObj) => {
+  //       this.handleErrors(errorObj);
+  //     });
+  // };
+
+  // getBookedSlots = () => {
+  //   API.getBookedSlots()
+  //     .then((bookedSlots) => this.setState({ bookedSlots: bookedSlots }))
+  //     .catch((errorObj) => {
+  //       this.handleErrors(errorObj);
+  //     });
+  // };
 
   // getProjects(tasks) {
   //   return [
@@ -277,9 +289,9 @@ class App extends React.Component {
       });
   };
 
-  createExam = (studentId) => {
+  createExam = (exam) => {
     //ADD Exam and then get Exam ID
-    API.createExam(studentId)
+    API.createExam(exam)
       .then(() => {
         // API.getExamId().then((examId) => {
         //   this.setState({
@@ -354,6 +366,7 @@ class App extends React.Component {
     const value = {
       authUser: this.state.authUser,
       authErr: this.state.authErr,
+      courseId: this.state.courseId,
       loginUser: this.login,
       logoutUser: this.logout,
       authStudent: this.state.authStudent,
@@ -365,7 +378,8 @@ class App extends React.Component {
       <AuthContext.Provider value={value}>
         <Header
           showSidebar={this.showSidebar}
-          getPublicTasks={this.getPublicTasks}
+          // getPublicTasks={this.getPublicTasks}
+          getStudentExams={this.getStudentExams}
         />
 
         <Container fluid>
@@ -520,6 +534,7 @@ class App extends React.Component {
                     setTotalTimeSlot={this.setTotalTimeSlot}
                     exam={this.state.exam}
                     createExam={this.createExam}
+                    courseId={this.state.courseId}
                   />
                 </Col>
               </Row>
@@ -564,23 +579,18 @@ class App extends React.Component {
                   <StudentExams
                     exams={this.state.exams}
                     getExamSlots={this.getExamSlots}
+                    getStudentExams={this.getStudentExams}
                   />
                 </Col>
               </Row>
             </Route>
 
-            <Route path="/booking">
+            <Route path="/bookings">
               <Row className="vheight-100">
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
-                  <h4>Book exam</h4>
-                  <TodoList
-                    mode="private"
-                    tasks={this.state.tasks}
-                    editTask={this.editTask}
-                    updateTask={this.addOrEditTask}
-                    deleteTask={this.deleteTask}
-                  />
+                  <h4>My Booked Slots</h4>
+                  <BookedSlots bookedSlots={this.state.bookedSlots} />
                 </Col>
               </Row>
             </Route>

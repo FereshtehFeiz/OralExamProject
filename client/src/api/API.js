@@ -1,8 +1,9 @@
 import Task from "./Task";
 import Student from "./Student";
+import Exam from "./Exam";
 import StudentCourse from "./StudentCourse";
 import StudentExam from "./StudentExam";
-import ExamSlots from "./ExamSlots";
+import TimeSlot from "./TimeSlot";
 import Session from "./Session";
 
 const baseURL = "/api";
@@ -17,158 +18,6 @@ async function isAuthenticated() {
     let err = { status: response.status, errObj: userJson };
     throw err; // An object with the error coming from the server
   }
-}
-
-async function getTasks(filter) {
-  let url = "/tasks";
-  if (filter) {
-    const queryParams = "?filter=" + filter;
-    url += queryParams;
-  }
-  const response = await fetch(baseURL + url);
-  const tasksJson = await response.json();
-  if (response.ok) {
-    //return tasksJson.map((t) => Task.from(t));
-    return tasksJson.map(
-      (t) =>
-        new Task(
-          t.id,
-          t.description,
-          t.important,
-          t.privateTask,
-          t.deadline,
-          t.project,
-          t.completed,
-          t.user
-        )
-    );
-  } else {
-    let err = { status: response.status, errObj: tasksJson };
-    throw err; // An object with the error coming from the server
-  }
-}
-
-async function getPublicTasks() {
-  let url = "/tasks/public";
-
-  const response = await fetch(baseURL + url);
-  const tasksJson = await response.json();
-  if (response.ok) {
-    //return tasksJson.map((t) => Task.from(t));
-    return tasksJson.map(
-      (t) =>
-        new Task(
-          t.id,
-          t.description,
-          t.important,
-          t.privateTask,
-          t.deadline,
-          t.project,
-          t.completed,
-          t.user
-        )
-    );
-  } else {
-    let err = { status: response.status, errObj: tasksJson };
-    throw err; // An object with the error coming from the server
-  }
-}
-
-async function addTask(task) {
-  return new Promise((resolve, reject) => {
-    fetch(baseURL + "/tasks", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-    })
-      .then((response) => {
-        if (response.ok) {
-          resolve(null);
-        } else {
-          // analyze the cause of error
-          response
-            .json()
-            .then((obj) => {
-              reject(obj);
-            }) // error msg in the response body
-            .catch((err) => {
-              reject({
-                errors: [
-                  { param: "Application", msg: "Cannot parse server response" },
-                ],
-              });
-            }); // something else
-        }
-      })
-      .catch((err) => {
-        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
-      }); // connection errors
-  });
-}
-
-async function updateTask(task) {
-  return new Promise((resolve, reject) => {
-    fetch(baseURL + "/tasks/" + task.id, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-    })
-      .then((response) => {
-        if (response.ok) {
-        } else {
-          // analyze the cause of error
-          response
-            .json()
-            .then((obj) => {
-              reject(obj);
-            }) // error msg in the response body
-            .catch((err) => {
-              reject({
-                errors: [
-                  { param: "Application", msg: "Cannot parse server response" },
-                ],
-              });
-            }); // something else
-        }
-      })
-      .catch((err) => {
-        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
-      }); // connection errors
-  });
-}
-
-async function deleteTask(taskId) {
-  return new Promise((resolve, reject) => {
-    fetch(baseURL + "/tasks/" + taskId, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.ok) {
-          resolve(null);
-        } else {
-          // analyze the cause of error
-          response
-            .json()
-            .then((obj) => {
-              reject(obj);
-            }) // error msg in the response body
-            .catch((err) => {
-              reject({
-                errors: [
-                  { param: "Application", msg: "Cannot parse server response" },
-                ],
-              });
-            }); // something else
-        }
-      })
-      .catch((err) => {
-        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
-      }); // connection errors
-  });
 }
 
 async function userLogin(username, password) {
@@ -323,12 +172,12 @@ async function studentLogout(sid) {
 }
 
 async function getStudentExams() {
-  let url = "/studentexams";
+  let url = "/exams";
   const response = await fetch(baseURL + url);
   const examsJson = await response.json();
   if (response.ok) {
     //return tasksJson.map((t) => Task.from(t));
-    return examsJson.map((t) => new StudentExam(t.eid, t.name, t.sid));
+    return examsJson.map((t) => new StudentExam(t.eid, t.name));
   } else {
     let err = { status: response.status, errObj: examsJson };
     throw err; // An object with the error coming from the server
@@ -341,7 +190,7 @@ async function getExamSlots(exam) {
   const examSlotJson = await response.json();
   if (response.ok) {
     //return tasksJson.map((t) => Task.from(t));
-    return examSlotJson.map((t) => new ExamSlots(t.eid));
+    return examSlotJson.map((t) => new TimeSlot(t.eid));
   } else {
     let err = { status: response.status, errObj: examSlotJson };
     throw err; // An object with the error coming from the server
@@ -382,14 +231,14 @@ async function addSession(session) {
   });
 }
 
-async function createExam(studentId) {
+async function createExam(exam) {
   return new Promise((resolve, reject) => {
     fetch(baseURL + "/createExam", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(studentId),
+      body: JSON.stringify(exam),
     })
       .then((response) => {
         if (response.ok) {
@@ -416,13 +265,23 @@ async function createExam(studentId) {
   });
 }
 
+async function getBookedSlots() {
+  let url = "/bookedSlots";
+  const response = await fetch(baseURL + url);
+  const examsJson = await response.json();
+  if (response.ok) {
+    //return tasksJson.map((t) => Task.from(t));
+    return examsJson.map(
+      (t) => new TimeSlot(t.name, t.mark, t.startTime, t.date, t.state)
+    );
+  } else {
+    let err = { status: response.status, errObj: examsJson };
+    throw err; // An object with the error coming from the server
+  }
+}
+
 const API = {
   isAuthenticated,
-  getTasks,
-  getPublicTasks,
-  addTask,
-  updateTask,
-  deleteTask,
   userLogin,
   userLogout,
   isStudent,
@@ -433,5 +292,6 @@ const API = {
   getExamSlots,
   addSession,
   createExam,
+  getBookedSlots,
 };
 export default API;

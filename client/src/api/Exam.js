@@ -1,12 +1,10 @@
 class Exam {
-  constructor(eid, cid, state, mark, slotid) {
-    if (eid) {
+  constructor(eid, cid, slotDuration) {
+    if (this.eid) {
       this.eid = eid;
-      this.cid = cid;
-      this.state = state;
-      this.mark = mark;
-      this.slotid = slotid;
     }
+    this.cid = cid;
+    this.slotDuration = slotDuration;
   }
 
   /**
