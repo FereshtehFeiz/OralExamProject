@@ -40,7 +40,7 @@ class App extends React.Component {
       timeSlot: 0,
       sessionNumber: 1,
       session: null,
-      examId: null,
+      examId: 0,
     };
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
@@ -290,12 +290,9 @@ class App extends React.Component {
   createExam = (exam) => {
     //ADD Exam and then get Exam ID
     API.createExam(exam)
-      .then(() => {
-        // API.getExamId().then((examId) => {
-        //   this.setState({
-        //     examId: examId,
-        //   });
-        // });
+      .then((res) => {
+        this.setState({ examId: res.id });
+        console.log(this.state.examId);
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -457,6 +454,7 @@ class App extends React.Component {
                     sessionNumber={this.state.sessionNumber}
                     session={this.state.session}
                     addSession={this.addSession}
+                    examId={this.state.examId}
                   />
                 </Col>
               </Row>

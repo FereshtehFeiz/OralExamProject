@@ -239,7 +239,10 @@ app.post("/api/createExam", (req, res) => {
     console.log(exam);
     examDao
       .createExam(exam)
-      .then((id) => res.status(201).json({ id: id }))
+      .then((id) => {
+        console.log(`examId is :${id}`);
+        res.status(201).json({ id: id })
+      })
       .catch((err) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
       });
