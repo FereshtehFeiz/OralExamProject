@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
 import Image from "react-bootstrap/Image";
+import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Link } from "react-router-dom";
 
@@ -18,14 +19,15 @@ const OralExamItem = (props) => {
         <td>
           {" "}
           <Link to={`/oralExamItem/${oralExamItem.timeslotId}`}>
-            <Image
+            <Button variant="primary">Enter Mark</Button>{" "}
+            {/* <Image
               width="20"
               height="20"
               className="img-button"
               src="/svg/edit.svg"
               alt=""
               onClick={() => updateMark(oralExamItem)}
-            />
+            /> */}
           </Link>
         </td>
       </tr>

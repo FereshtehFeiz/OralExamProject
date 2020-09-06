@@ -595,7 +595,7 @@ class App extends React.Component {
             <Route path="/examSlots">
               <Row className="vheight-100">
                 <Col sm={4}></Col>
-                <Col sm={4} className="below-nav">
+                <Col sm={6} className="below-nav">
                   <h4>List of slots for taking oral exam</h4>
                   <OralExamList
                     OralExams={this.state.OralExams}
