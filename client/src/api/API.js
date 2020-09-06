@@ -344,6 +344,33 @@ async function updateExam(StudentExam) {
   });
 }
 
+async function getResultView(courseId) {
+  console.log(courseId);
+  let url = "/resultView/" + courseId;
+  const response = await fetch(baseURL + url);
+  const slotsJson = await response.json();
+  if (response.ok) {
+    //return tasksJson.map((t) => Task.from(t));
+    return slotsJson.map(
+      (t) =>
+        new OralTimeSlot(
+          t.slotId,
+          t.startTime,
+          t.date,
+          t.state,
+          t.studentId,
+          t.mark,
+          t.attendance,
+          t.cid
+        )
+    );
+  } else {
+    let err = { status: response.status, errObj: slotsJson };
+    console.log(err);
+    throw err; // An object with the error coming from the server
+  }
+}
+
 const API = {
   isAuthenticated,
   userLogin,
@@ -359,5 +386,6 @@ const API = {
   getBookedSlots,
   getOralExamTimeSlots,
   updateExam,
+  getResultView,
 };
 export default API;

@@ -37,6 +37,28 @@ exports.getExamSlots = function (cid) {
   });
 };
 
+/**
+ * Get results of oral exams booked or not booked for teacher
+ */
+
+exports.getResultView = function (cid) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "SELECT studentId,startTime,date,slots.state,mark FROM student_exam " +
+      "INNER JOIN slots on slots.slotId = student_exam.slotId " +
+      "WHERE student_exam.cid = ? ";
+    db.all(sql, [cid], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        let ExamResult = rows.map((row) => createExamSlots(row));
+        console.log(ExamResult);
+        resolve(ExamResult);
+      }
+    });
+  });
+};
+
 // exports.createExamTimeSlot = function (timeSlot) {
 //   if (timeSlot.date) {
 //     timeSlot.date = moment(timeSlot.date).format("YYYY-MM-DD HH:mm");

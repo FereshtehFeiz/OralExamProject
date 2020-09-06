@@ -265,6 +265,22 @@ app.get("/api/examSlots/:courseId", (req, res) => {
     });
 });
 
+//GET /shows exam result view for teacher for given course Id
+app.get("/api/resultView/:courseId", (req, res) => {
+  console.log(req.params.courseId);
+  timeslotDao
+    .getResultView(req.params.courseId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        errors: [{ msg: err }],
+      });
+    });
+});
+
 //PUT /oralExamItem/<slotId>  update mark and attendance for given slotId
 app.put("/api/oralExamItem/:slotId", (req, res) => {
   if (!req.body.id) {
