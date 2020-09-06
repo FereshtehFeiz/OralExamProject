@@ -7,6 +7,7 @@ class oralTimeSlot {
     state,
     mark,
     attendance,
+    withdraw,
     cid
   ) {
     if (slotId) this.slotId = slotId;
@@ -16,6 +17,7 @@ class oralTimeSlot {
     this.state = state;
     this.mark = mark;
     this.attendance = attendance || false;
+    this.withdraw = withdraw || false;
     this.cid = cid;
   }
 }

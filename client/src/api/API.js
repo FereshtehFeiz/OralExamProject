@@ -298,6 +298,7 @@ async function getOralExamTimeSlots(courseId) {
           t.studentId,
           t.mark,
           t.attendance,
+          t.withdraw,
           t.cid
         )
     );
@@ -310,15 +311,19 @@ async function getOralExamTimeSlots(courseId) {
 
 // update student mark and attendance for oral exam
 
-async function updateExam(StudentExam) {
+async function updateExam(exam) {
   return new Promise((resolve, reject) => {
-    console.log(StudentExam);
-    fetch(baseURL + "/oralExamItem/" + StudentExam.slotId, {
+    console.log(exam.slotId);
+
+    // let url = baseURL + "/oralExamItem/" + exam.slotId;
+    // const response = await fetch( url);
+
+    fetch(baseURL + "/oralExamItem/" + exam.slotId, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(StudentExam),
+      body: JSON.stringify(exam),
     })
       .then((response) => {
         if (response.ok) {
@@ -361,6 +366,7 @@ async function getResultView(courseId) {
           t.studentId,
           t.mark,
           t.attendance,
+          t.withdraw,
           t.cid
         )
     );

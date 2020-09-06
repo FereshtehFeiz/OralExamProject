@@ -11,6 +11,7 @@ class StudentExam {
     this.cid = cid;
     this.examId = examId;
     this.attendance = attendance || false;
+    this.withdraw = withdraw || false;
   }
 }
 
