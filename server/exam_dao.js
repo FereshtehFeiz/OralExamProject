@@ -18,7 +18,7 @@ exports.createExam = function (exam) {
         console.log(err);
         reject(err);
       } else {
-        console.log(this.lastID);
+        //console.log(this.lastID);
         resolve(this.lastID);
       }
     });

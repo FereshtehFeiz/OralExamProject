@@ -53,10 +53,9 @@ class DefineSession extends React.Component {
   };
 
   calculateSession = () => {
-
     let difference = (this.state.duration - this.state.totalTimeSlot) / this.state.timeSlot;
     if (difference >= 0)
-      this.setState({ totalTimeSlot: 0 })
+      this.setState({ totalTimeSlot: this.state.totalTimeSlot - this.state.duration })
     else
       this.setState({ totalTimeSlot: this.state.totalTimeSlot - this.state.duration })
     let rowsData = this.state.rowsData;
@@ -93,6 +92,9 @@ class DefineSession extends React.Component {
               <Form.Group>
                 <Card>
                   <Card.Body>
+                    <Card.Title>
+                      examID: {this.props.examId}
+                    </Card.Title>
                     <Card.Title>
                       Total selected students: {this.state.studentsNumber}
                     </Card.Title>
