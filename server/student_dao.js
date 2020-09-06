@@ -2,7 +2,7 @@
 
 const Student = require("./student");
 const Exam = require("./exam");
-
+const StudentExam = require("./student_exam");
 const db = require("./db");
 
 const createStudent = function (row) {
@@ -11,6 +11,19 @@ const createStudent = function (row) {
 
 const createStudentExams = function (row) {
   return new Exam(row.eid, row.name);
+};
+
+const createStudentExam = function (row) {
+  return new StudentExam(
+    row.eid,
+    row.studentId,
+    row.state,
+    row.mark,
+    row.slotId,
+    row.cid,
+    row.examId,
+    row.attendance
+  );
 };
 
 /**
@@ -70,5 +83,25 @@ exports.getBookedSlots = function (studentId) {
         resolve(bookingSlots);
       }
     });
+  });
+};
+
+/**
+ * Update Mark and attendance
+ */
+exports.updateExam = function (slotId, NewStudentExam) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "UPDATE student_exam SET mark = ?, attendance = ? WHERE slotId = ?";
+    db.run(
+      sql,
+      [NewStudentExam.mark, NewStudentExam.attendance, slotId],
+      (err) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else resolve(null);
+      }
+    );
   });
 };

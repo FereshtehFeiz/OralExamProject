@@ -5,7 +5,7 @@ import { AuthContext } from "../auth/AuthContext";
 import Table from "react-bootstrap/Table";
 
 const OralExamList = (props) => {
-  let { OralExams, updateMark } = props;
+  let { OralExams, updateExam } = props;
 
   return (
     <AuthContext.Consumer>
@@ -21,15 +21,15 @@ const OralExamList = (props) => {
                   <th>Start Time</th>
                   <th>Attendance</th>
                   <th>Mark</th>
-                  <th>Update Mark</th>
+                  <th>Take Exam</th>
                 </tr>
               </thead>
               {OralExams.map((oralExamItem) => (
                 <tbody>
                   <OralExamItem
-                    key={oralExamItem.id}
+                    key={oralExamItem.slotId}
                     oralExamItem={oralExamItem}
-                    updateMark={updateMark}
+                    updateExam={updateExam}
                   />
                 </tbody>
               ))}

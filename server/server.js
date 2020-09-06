@@ -262,5 +262,25 @@ app.get("/api/examSlots/:courseId", (req, res) => {
     });
 });
 
+//PUT /oralExamItem/<slotId>  update mark and attendance for given slotId
+app.put("/api/oralExamItem/:slotId", (req, res) => {
+  if (!req.body.id) {
+    res.status(400).end();
+  } else {
+    const StudentExam = req.body;
+    // const user = req.user && req.user.user;
+    // task.user = user;
+    console.log(StudentExam);
+    studentDao
+      .updateExam(req.params.slotId, StudentExam)
+      .then((result) => res.status(200).end())
+      .catch((err) =>
+        res.status(500).json({
+          errors: [{ param: "Server", msg: err }],
+        })
+      );
+  }
+});
+
 //activate server
 app.listen(port, () => console.log("Server ready"));

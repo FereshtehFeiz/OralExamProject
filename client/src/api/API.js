@@ -308,6 +308,42 @@ async function getOralExamTimeSlots(courseId) {
   }
 }
 
+// update student mark and attendance for oral exam
+
+async function updateExam(StudentExam) {
+  return new Promise((resolve, reject) => {
+    console.log(StudentExam);
+    fetch(baseURL + "/oralExamItem/" + StudentExam.slotId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(StudentExam),
+    })
+      .then((response) => {
+        if (response.ok) {
+        } else {
+          // analyze the cause of error
+          response
+            .json()
+            .then((obj) => {
+              reject(obj);
+            }) // error msg in the response body
+            .catch((err) => {
+              reject({
+                errors: [
+                  { param: "Application", msg: "Cannot parse server response" },
+                ],
+              });
+            }); // something else
+        }
+      })
+      .catch((err) => {
+        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
+      }); // connection errors
+  });
+}
+
 const API = {
   isAuthenticated,
   userLogin,
@@ -322,5 +358,6 @@ const API = {
   createExam,
   getBookedSlots,
   getOralExamTimeSlots,
+  updateExam,
 };
 export default API;
