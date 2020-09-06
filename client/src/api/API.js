@@ -281,8 +281,9 @@ async function getBookedSlots() {
   }
 }
 
-async function getExamSlotsForTeacher() {
-  let url = "/examSlots";
+async function getOralExamTimeSlots(courseId) {
+  console.log(courseId);
+  let url = "/examSlots/" + courseId;
   const response = await fetch(baseURL + url);
   const slotsJson = await response.json();
   if (response.ok) {
@@ -296,11 +297,13 @@ async function getExamSlotsForTeacher() {
           t.state,
           t.studentId,
           t.mark,
-          t.attendance
+          t.attendance,
+          t.cid
         )
     );
   } else {
     let err = { status: response.status, errObj: slotsJson };
+    console.log(err);
     throw err; // An object with the error coming from the server
   }
 }
@@ -318,6 +321,6 @@ const API = {
   addSession,
   createExam,
   getBookedSlots,
-  getExamSlotsForTeacher,
+  getOralExamTimeSlots,
 };
 export default API;

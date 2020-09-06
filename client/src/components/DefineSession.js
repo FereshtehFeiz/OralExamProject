@@ -9,7 +9,7 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
-import Modal from 'react-bootstrap/Modal';
+import Modal from "react-bootstrap/Modal";
 
 class DefineSession extends React.Component {
   constructor(props) {
@@ -30,8 +30,6 @@ class DefineSession extends React.Component {
     this.state.submitted = false;
     this.handleDifference = this.handleDifference.bind(this);
   }
-
-
 
   IncrementItem = () => {
     this.setState({ duration: this.state.duration + this.props.timeSlot });
@@ -67,11 +65,11 @@ class DefineSession extends React.Component {
 
   showModal = () => {
     this.setState({ show: true });
-  }
+  };
 
   hideModal = () => {
     this.setState({ show: false });
-  }
+  };
 
   calculateSession = () => {
 
@@ -99,9 +97,6 @@ class DefineSession extends React.Component {
       form.reportValidity();
     } else {
       let session = Object.assign({}, this.state);
-      // if (session.sessionDate !== "") {
-      //   session.sessionDate = moment(session.sessionDate);
-      // }
       this.props.addSession(session);
       this.setState({ submitted: true });
     }
@@ -113,7 +108,6 @@ class DefineSession extends React.Component {
       <AuthContext.Consumer>
         {(context) => (
           <>
-
             <Col>
               <Form.Group>
                 <Card>
@@ -130,9 +124,9 @@ class DefineSession extends React.Component {
                     {this.state.errorMsg && (
                       <Badge variant="warning">
                         <h6>
-                          The difference is negative! Please modify the
-                          duration of session
-                          </h6>
+                          The difference is negative! Please modify the duration
+                          of session
+                        </h6>
                       </Badge>
                     )}
                   </Card.Body>
@@ -203,7 +197,9 @@ class DefineSession extends React.Component {
                         type="date"
                         name="sessionDate"
                         value={this.state.sessionDate}
-                        onChange={(ev) => this.updateField(ev.target.name, ev.target.value)}
+                        onChange={(ev) =>
+                          this.updateField(ev.target.name, ev.target.value)
+                        }
                       />
                     </Form.Group>
                     <Form.Group controlId="start-time">
@@ -212,7 +208,9 @@ class DefineSession extends React.Component {
                         type="time"
                         name="startTime"
                         value={this.state.startTime}
-                        onChange={(ev) => this.updateField(ev.target.name, ev.target.value)}
+                        onChange={(ev) =>
+                          this.updateField(ev.target.name, ev.target.value)
+                        }
                       />
                     </Form.Group>
 
@@ -224,23 +222,25 @@ class DefineSession extends React.Component {
                         min="0"
                         step={this.props.timeSlot}
                         value={this.state.duration}
-                        onChange={(ev) => this.updateField(ev.target.name, ev.target.value)}
+                        onChange={(ev) =>
+                          this.updateField(ev.target.name, ev.target.value)
+                        }
                         defaultValue={this.props.timeSlot}
                       />
                     </Form.Group>
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" onClick={this.hideModal}>Close</Button>
-                    <Button variant="primary" onClick={this.calculateSession}>Save Changes</Button>
+                    <Button variant="secondary" onClick={this.hideModal}>
+                      Close
+                    </Button>
+                    <Button variant="primary" onClick={this.calculateSession}>
+                      Save Changes
+                    </Button>
                   </Modal.Footer>
                 </Modal>
-
-
               </Form.Group>
             </Form>
-            <Row>
-
-            </Row>
+            <Row></Row>
           </>
         )}
       </AuthContext.Consumer>
