@@ -16,14 +16,15 @@ class DefineSession extends React.Component {
     super(props);
     this.state = {
       startTime: '14:00',
-      duration: 5,
+      duration: 0,
       sessionDate: null,
-      difference: 0,
+      difference: 0,//availableSlots
       errorMsg: false,
       show: false,
       rowsData: [],
       totalTimeSlot: this.props.totalTimeSlot,
-      studentsNumber: this.props.studentsNumber
+      studentsNumber: this.props.studentsNumber,
+      timeSlot: this.props.timeSlot
     };
 
     this.state.submitted = false;
@@ -73,45 +74,21 @@ class DefineSession extends React.Component {
   }
 
   calculateSession = () => {
-    //check if selected duration is less than the time slot for one student
-    if (this.state.duration < this.props.timeSlot) {
-      console.log("not acceptable");
-    }
 
-    else if (this.state.duration <= this.props.totalTimeSlot) {
-      let newTotalTimeSlot = this.props.totalTimeSlot - this.state.duration;
-      let rowsData = this.state.rowsData;
-      let rowData = {
-        startTime: this.state.startTime,
-        sessionDate: this.state.sessionDate,
-        duration: this.state.duration,
-        students: Math.floor(this.state.duration / this.props.timeSlot)
-      }
-      let newTotalStudent = this.props.studentsNumber - rowData.students;
-      rowsData.push(rowData);
-      console.log(rowData);
-      console.log(`-${newTotalTimeSlot}`);
-      this.hideModal();
-      this.setState({ rowsData, totalTimeSlot: newTotalTimeSlot, studentsNumber: newTotalStudent })
-      console.log(this.state.rowsData);
+    let difference = (this.state.duration - this.state.totalTimeSlot) / this.state.timeSlot;
+    if (difference >= 0)
+      this.setState({ totalTimeSlot: 0 })
+    else
+      this.setState({ totalTimeSlot: this.state.totalTimeSlot - this.state.duration })
+    let rowsData = this.state.rowsData;
+    let rowData = {
+      startTime: this.state.startTime,
+      sessionDate: this.state.sessionDate,
+      duration: this.state.duration
     }
-
-    else if (this.state.duration > this.props.timeSlot) {
-      let difference = this.state.duration - this.props.totalTimeSlot;
-      let rowsData = this.state.rowsData;
-      let rowData = {
-        startTime: this.state.startTime,
-        sessionDate: this.state.sessionDate,
-        duration: this.state.duration,
-        students: this.state.studentsNumber
-      }
-      rowsData.push(rowData);
-      console.log(rowData);
-      console.log(`+${difference}`);
-      this.hideModal();
-      this.setState({ rowsData, difference })
-      console.log(this.state.rowsData);
-    }
+    rowsData.push(rowData);
+    this.setState({ rowsData, difference })
+    this.hideModal();
   }
 
 
@@ -144,9 +121,9 @@ class DefineSession extends React.Component {
                     <Card.Title>
                       Total selected students: {this.state.studentsNumber}
                     </Card.Title>
-                    <Card.Title>
+                    {/* <Card.Title>
                       Total needed time: {this.state.totalTimeSlot}
-                    </Card.Title>
+                    </Card.Title> */}
                     <Card.Title>
                       Number of available slots: {this.state.difference}
                     </Card.Title>
@@ -170,7 +147,6 @@ class DefineSession extends React.Component {
                   <th scope="col">Session Date</th>
                   <th scope="col">Start Time</th>
                   <th scope="col">Total Duration</th>
-                  <th scope="col">Students count</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,7 +157,6 @@ class DefineSession extends React.Component {
                       <td>{item.sessionDate}</td>
                       <td>{item.startTime}</td>
                       <td>{item.duration}</td>
-                      <td>{item.students}</td>
                     </tr>
                   )
                 }
@@ -208,9 +183,9 @@ class DefineSession extends React.Component {
 
               <Form.Group>
                 <Button variant="primary" type="submit" onClick={this.handleSubmit}>Save</Button>{" "}
-                <Link to="/createExam">
+                {/* <Link to="/createExam">
                   <Button variant="primary" type="submit">Select student</Button>{" "}
-                </Link>
+                </Link> */}
                 <Button variant="primary" onClick={this.showModal}>Add session</Button>{" "}
 
 
@@ -246,6 +221,8 @@ class DefineSession extends React.Component {
                       <Form.Control
                         type="number"
                         name="duration"
+                        min="0"
+                        step={this.props.timeSlot}
                         value={this.state.duration}
                         onChange={(ev) => this.updateField(ev.target.name, ev.target.value)}
                         defaultValue={this.props.timeSlot}

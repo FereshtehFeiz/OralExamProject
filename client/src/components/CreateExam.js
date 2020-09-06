@@ -15,7 +15,7 @@ class CreateExam extends React.Component {
       checkedCount: 0,
       totalTimeSlot: 0,
       selectedStudentsID: [],
-      timeSlot: null,
+      timeSlot: 10,
     };
   }
 
@@ -29,9 +29,7 @@ class CreateExam extends React.Component {
         cid: this.props.courseId,
         slotDuration: this.state.timeSlot,
       });
-      this.setState({
-        submitted: true,
-      });
+      this.setState({ submitted: true });
     }
     this.props.setNumberofStudents(this.state.checkedCount);
     this.props.setTimeSlot(this.state.timeSlot);
@@ -158,9 +156,7 @@ class CreateExam extends React.Component {
               <Button
                 variant="primary"
                 onClick={(ev) => this.handleSubmit}
-                type="submit"
-              >
-                Create Session
+                type="submit">Create Session
               </Button>
             </Form>
           </>
