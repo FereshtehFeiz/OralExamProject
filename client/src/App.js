@@ -292,7 +292,6 @@ class App extends React.Component {
     API.createExam(exam)
       .then((res) => {
         this.setState({ examId: res.id });
-        console.log(this.state.examId);
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
