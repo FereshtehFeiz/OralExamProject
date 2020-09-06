@@ -102,6 +102,7 @@ class OralExamItem extends React.Component {
               <Form.Group>
                 <div className="custom-control custom-checkbox">
                   <input
+                    value={this.state.attendance}
                     type="checkbox"
                     className="custom-control-input"
                     id={"check-t" + this.props.oralExamItem.slotId}

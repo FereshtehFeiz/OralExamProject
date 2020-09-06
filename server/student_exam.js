@@ -10,7 +10,7 @@ class StudentExam {
     this.slotId = slotId;
     this.cid = cid;
     this.examId = examId;
-    this.attendance = attendance;
+    this.attendance = attendance || false;
   }
 }
 

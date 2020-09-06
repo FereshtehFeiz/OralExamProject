@@ -14,6 +14,7 @@ import StudentExams from "./components/StudentExams";
 import DefineSession from "./components/DefineSession";
 import BookedSlots from "./components/BookedSlots";
 import OralExamList from "./components/OralExamList";
+import ExamResult from "./components/ExamResult";
 import API from "./api/API";
 import { Redirect, Route, Link } from "react-router-dom";
 import { Switch } from "react-router";
@@ -24,15 +25,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // tasks: [],
       OralExams: [],
       exams: [],
       slots: [],
       studentsOfCourse: [],
-      // projects: [],
-      // filter: "all",
       openMobileMenu: false,
-      // editedTask: null,
       selectedStudents: [],
       addSession: null,
       studentsNumber: 0,
@@ -114,8 +111,6 @@ class App extends React.Component {
             exams: null,
             studentsOfCourse: studentsOfCourse,
             courseId: user.courseId,
-            // tasks: tasks,
-            // projects: this.getProjects(tasks),
             authUser: user,
             authErr: null,
             authStudent: null,
@@ -351,6 +346,16 @@ class App extends React.Component {
       });
   };
 
+  getResultView = () => {
+    API.getResultView(this.state.courseId)
+      .then((OralExamResult) =>
+        this.setState({ OralExamResult: OralExamResult })
+      )
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
+
   updateExam = () => {
     API.updateExam(this.state.OralExams)
       .then(() => {
@@ -402,6 +407,7 @@ class App extends React.Component {
           // getPublicTasks={this.getPublicTasks}
           getStudentExams={this.getStudentExams}
           getOralExamTimeSlots={this.getOralExamTimeSlots}
+          getResultView={this.getResultView}
         />
 
         <Container fluid>
@@ -501,6 +507,16 @@ class App extends React.Component {
                     OralExams={this.state.OralExams}
                     updateExam={this.updateExam}
                   />
+                </Col>
+              </Row>
+            </Route>
+
+            <Route path="/resultView">
+              <Row className="vheight-100">
+                <Col sm={4}></Col>
+                <Col sm={6} className="below-nav">
+                  <h4>Result Overview</h4>
+                  <ExamResult OralExamResult={this.state.OralExamResult} />
                 </Col>
               </Row>
             </Route>

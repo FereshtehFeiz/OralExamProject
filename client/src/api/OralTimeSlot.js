@@ -18,7 +18,7 @@ class OralTimeSlot {
     this.state = state;
     this.studentId = studentId;
     this.mark = mark;
-    this.attendance = attendance;
+    this.attendance = attendance || false;
     this.cid = cid;
   }
 

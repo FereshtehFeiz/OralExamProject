@@ -48,7 +48,11 @@ const Header = (props) => {
                   >
                     Take Exam
                   </Nav.Link>
-                  <Nav.Link as={NavLink} to="/results">
+                  <Nav.Link
+                    as={NavLink}
+                    to="/resultView"
+                    onClick={() => props.getResultView()}
+                  >
                     View Results
                   </Nav.Link>
                   <Nav.Link as={NavLink} to="/createExam">
