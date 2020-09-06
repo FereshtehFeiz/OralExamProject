@@ -5,11 +5,10 @@ import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
-import moment from "moment";
-import { Link } from "react-router-dom";
-import { Redirect } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
 import Modal from "react-bootstrap/Modal";
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl'
 
 class DefineSession extends React.Component {
   constructor(props) {
@@ -28,39 +27,21 @@ class DefineSession extends React.Component {
     };
 
     this.state.submitted = false;
-    this.handleDifference = this.handleDifference.bind(this);
   }
-
-  IncrementItem = () => {
-    this.setState({ duration: this.state.duration + this.props.timeSlot });
-    this.state.difference = this.state.duration - this.props.totalTimeSlot;
-    this.handleDifference(this.state.difference);
-  };
-
-  DecreaseItem = () => {
-    if (this.state.duration < this.props.timeSlot) {
-      this.setState({
-        duration: this.props.timeSlot,
-      });
-    } else {
-      this.setState({
-        duration: this.state.duration - this.props.timeSlot,
-      });
-    }
-    this.state.difference = this.state.duration - this.props.totalTimeSlot;
-    this.handleDifference(this.state.difference);
-  };
-
-  handleDifference = (difference) => {
-    if (difference >= 0) {
-      this.state.errorMsg = false;
-    } else if (difference < 0) {
-      this.state.errorMsg = true;
-    }
-  };
 
   updateField = (name, value) => {
     this.setState({ [name]: value });
+  };
+
+  decreaseItem = () => {
+    if (this.state.duration === 0)
+      this.setState({ duration: 0 });
+    else
+      this.setState({ duration: this.state.duration - this.state.timeSlot });
+  };
+
+  incrementItem = () => {
+    this.setState({ duration: this.state.duration + this.state.timeSlot });
   };
 
   showModal = () => {
@@ -158,37 +139,13 @@ class DefineSession extends React.Component {
             </table>
 
             <Form method="POST" onSubmit={(event) => this.handleSubmit(event)}>
-              {/* 
-
-              
-                <button
-                  className="btn btn-secondary"
-                  onClick={this.DecreaseItem}
-                >
-                  -
-                </button>{" "}
-                <button
-                  className="btn btn-secondary"
-                  onClick={this.IncrementItem}
-                >
-                  +
-                </button>
-              </Form.Group> */}
-
               <Form.Group>
                 <Button variant="primary" type="submit" onClick={this.handleSubmit}>Save</Button>{" "}
-                {/* <Link to="/createExam">
-                  <Button variant="primary" type="submit">Select student</Button>{" "}
-                </Link> */}
                 <Button variant="primary" onClick={this.showModal}>Add session</Button>{" "}
-
-
-
-
 
                 <Modal show={this.state.show} onHide={this.hideModal} backdrop="static" keyboard={false}>
                   <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>Add session</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
                     <Form.Group controlId="date">
@@ -215,18 +172,55 @@ class DefineSession extends React.Component {
                     </Form.Group>
 
                     <Form.Group controlId="duration">
-                      <Form.Label>Duration</Form.Label>
+                      {/* <Form.Label>Duration</Form.Label>
                       <Form.Control
+                        disabled
                         type="number"
                         name="duration"
                         min="0"
                         step={this.props.timeSlot}
+                        defaultValue={this.props.timeSlot}
                         value={this.state.duration}
                         onChange={(ev) =>
                           this.updateField(ev.target.name, ev.target.value)
                         }
-                        defaultValue={this.props.timeSlot}
-                      />
+                      /> */}
+                      {/* <button className="btn btn-secondary" onClick={this.decreaseItem}>-</button>{" "}
+                      <button className="btn btn-secondary" onClick={this.incrementItem}>+</button> */}
+
+
+
+                      <Form.Label>Duration</Form.Label>
+                      <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                          <Button variant="outline-secondary" onClick={this.decreaseItem}>-</Button>
+                        </InputGroup.Prepend>
+
+                        <FormControl
+                          aria-describedby="basic-addon1"
+                          disabled
+                          name="duration"
+                          min="0"
+                          defaultValue={this.props.timeSlot}
+                          value={this.state.duration}
+                        />
+                        <InputGroup.Append>
+                          <Button variant="outline-secondary" onClick={this.incrementItem}>+</Button>
+                        </InputGroup.Append>
+                      </InputGroup>
+
+                      {/* <InputGroup className="mb-3">
+                        <FormControl
+                          placeholder="Recipient's username"
+                          aria-label="Recipient's username"
+                          aria-describedby="basic-addon2"
+                        />
+                        <InputGroup.Append>
+                          <Button variant="outline-secondary">Button</Button>
+                        </InputGroup.Append>
+                      </InputGroup> */}
+
+
                     </Form.Group>
                   </Modal.Body>
                   <Modal.Footer>
