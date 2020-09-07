@@ -1,6 +1,5 @@
-SELECT startTime,date,slots.state,studentId,mark,attendance
-FROM slots
-INNER JOIN student_exam on student_exam.eid = slots.eid
-WHERE slots.state = 0 and slots.cid = 2;
-
-
+SELECT * 
+FROM student_exam
+INNER JOIN exams ON exams.eid = student_exam.examId
+INNER JOIN slots ON slots.eid = exams.eid
+WHERE slots.state = 1 and exams.cid = 2;

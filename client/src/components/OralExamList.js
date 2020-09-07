@@ -18,7 +18,6 @@ const OralExamList = (props) => {
                 <tr>
                   <th>Student ID</th>
                   <th>Date</th>
-                  <th>Start Time</th>
                   <th>Attendance</th>
                   <th>Mark</th>
                   <th>Withdraw</th>

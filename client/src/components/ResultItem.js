@@ -18,8 +18,6 @@ class OralExamItem extends React.Component {
         <tr key={this.props.resultItem.slotId}>
           <td>{this.props.resultItem.studentId}</td>
           <td>{this.props.resultItem.date}</td>
-          <td>{this.props.resultItem.startTime}</td>
-
           <td>
             {this.props.resultItem.mark === 0 ? (
               <span className="badge badge-danger">Not Booked</span>

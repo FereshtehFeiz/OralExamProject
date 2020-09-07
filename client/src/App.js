@@ -10,7 +10,7 @@ import LoginForm from "./components/LoginForm";
 import StudentLogin from "./components/StudentLogin";
 import SelectRole from "./components/SelectRole";
 import CreateExam from "./components/CreateExam";
-import StudentExams from "./components/StudentExams";
+import StudentExamsList from "./components/StudentExamsList";
 import DefineSession from "./components/DefineSession";
 import BookedSlots from "./components/BookedSlots";
 import OralExamList from "./components/OralExamList";
@@ -38,7 +38,7 @@ class App extends React.Component {
       sessionNumber: 1,
       session: null,
       examId: 0,
-      slotsSaved: false
+      slotsSaved: false,
     };
     this.setStudentsIDList = this.setStudentsIDList.bind(this);
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
@@ -146,6 +146,7 @@ class App extends React.Component {
   studentlogin = (sid) => {
     API.studentLogin(sid)
       .then((student) => {
+        console.log(student);
         // API.getStudentExams().then((studentExams) => {
         // API.getBookedSlots()
         //   .then((bookedSlots) => {
@@ -171,9 +172,10 @@ class App extends React.Component {
       });
   };
 
-  getStudentExams = (sid) => {
-    API.getStudentExams(sid)
-      .then((Studentexams) => this.setState({ Studentexams: Studentexams }))
+  getStudentExams = () => {
+    // console.log(studentId);
+    API.getStudentExams(this.state.authStudent.studentId)
+      .then((StudentExams) => this.setState({ StudentExams: StudentExams }))
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
@@ -187,101 +189,19 @@ class App extends React.Component {
   //     });
   // };
 
-  // getProjects(tasks) {
-  //   return [
-  //     ...new Set(
-  //       tasks.map((task) => {
-  //         if (task.project) return task.project;
-  //         else return null;
-  //       })
-  //     ),
-  //   ];
-  // }
-
   showSidebar = () => {
     this.setState((state) => ({ openMobileMenu: !state.openMobileMenu }));
   };
 
-  // getPublicTasks = () => {
-  //   API.getPublicTasks()
-  //     .then((tasks) => this.setState({ tasks: tasks }))
-  //     .catch((errorObj) => {
-  //       this.handleErrors(errorObj);
-  //     });
-  // };
-
-  // filterTasks = (filter) => {
-  //   if (filter === "all") {
-  //     API.getTasks()
-  //       .then((tasks) =>
-  //         this.setState({
-  //           tasks: tasks,
-  //           filter: "all",
-  //           projects: this.getProjects(tasks),
-  //         })
-  //       )
-  //       .catch((errorObj) => {
-  //         this.handleErrors(errorObj);
-  //       });
-  //   } else {
-  //     API.getTasks(filter)
-  //       .then((tasks) => {
-  //         this.setState({
-  //           tasks: tasks,
-  //           filter: filter,
-  //           projects: this.getProjects(tasks),
-  //         });
-  //       })
-  //       .catch((errorObj) => {
-  //         this.handleErrors(errorObj);
-  //       });
-  //   }
-  // };
-
-  // addOrEditTask = (task) => {
-  //   if (!task.id) {
-  //     //ADD
-  //     API.addTask(task)
-  //       .then(() => {
-  //         //get the updated list of tasks from the server
-  //         API.getTasks().then((tasks) =>
-  //           this.setState({
-  //             tasks: tasks,
-  //             filter: "All",
-  //             projects: this.getProjects(tasks),
-  //           })
-  //         );
-  //       })
-  //       .catch((errorObj) => {
-  //         this.handleErrors(errorObj);
-  //       });
-  //   } else {
-  //     //UPDATE
-  //     API.updateTask(task)
-  //       .then(() => {
-  //         //get the updated list of tasks from the server
-  //         API.getTasks().then((tasks) =>
-  //           this.setState({
-  //             tasks: tasks,
-  //             filter: "All",
-  //             projects: this.getProjects(tasks),
-  //           })
-  //         );
-  //       })
-  //       .catch((errorObj) => {
-  //         this.handleErrors(errorObj);
-  //       });
-  //   }
-  // };
-
   //ADD Session
   addSession = async (session) => {
-
     await API.addSession(session)
       .then((res) => {
         this.setState({ slotsSaved: res });
       })
-      .catch((errorObj) => { this.handleErrors(errorObj); });
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
   };
 
   //ADD Exam and then get Exam ID
@@ -290,41 +210,10 @@ class App extends React.Component {
       .then((res) => {
         this.setState({ examId: res.id });
       })
-      .catch((errorObj) => { this.handleErrors(errorObj); });
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
   };
-
-  // editTask = (task) => {
-  //   this.setState({ editedTask: task });
-  // };
-
-  // deleteTask = (task) => {
-  //   API.deleteTask(task.id)
-  //     .then(() => {
-  //       //get the updated list of tasks from the server
-  //       API.getTasks().then((tasks) =>
-  //         this.setState({
-  //           tasks: tasks,
-  //           filter: "All",
-  //           projects: this.getProjects(tasks),
-  //         })
-  //       );
-  //     })
-  //     .catch((errorObj) => {
-  //       this.handleErrors(errorObj);
-  //     });
-  // };
-
-  // getExamSlots = (exam) => {
-  //   API.getExamSlots(exam.id)
-  //     .then((slots) => {
-  //       this.setState({
-  //         slots: slots,
-  //       });
-  //     })
-  //     .catch((errorObj) => {
-  //       this.handleErrors(errorObj);
-  //     });
-  // };
 
   checkStudentId = (student) => {
     API.isStudent(student.id)
@@ -354,7 +243,7 @@ class App extends React.Component {
 
   updateExam = (examResult) => {
     API.updateExam(examResult)
-      .then(() => { })
+      .then(() => {})
 
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -484,15 +373,13 @@ class App extends React.Component {
               </Row>
             </Route>
 
-            <Route path="/exams">
+            <Route path="/StudentExams">
               <Row className="vheight-100">
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
-                  <StudentExams
-                    exams={this.state.exams}
-                    getExamSlots={this.getExamSlots}
-                    getStudentExams={this.getStudentExams}
-                  />
+                  <h4>List of exams to book</h4>
+
+                  <StudentExamsList StudentExams={this.state.StudentExams} />
                 </Col>
               </Row>
             </Route>

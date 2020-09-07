@@ -173,8 +173,8 @@ async function studentLogout(sid) {
   });
 }
 
-async function getStudentExams() {
-  let url = "/exams";
+async function getStudentExams(sid) {
+  let url = "/StudentExams/" + sid;
   const response = await fetch(baseURL + url);
   const examsJson = await response.json();
   if (response.ok) {

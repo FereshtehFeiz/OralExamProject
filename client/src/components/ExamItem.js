@@ -1,26 +1,30 @@
 import React from "react";
 import moment from "moment";
 import Image from "react-bootstrap/Image";
-import ListGroup from "react-bootstrap/ListGroup";
+import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { Redirect } from "react-router-dom";
 
-const ExamItem = (props) => {
-  let { exam, showExamSlots } = props;
+class ExamItem extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <>
+        <tr>
+          <td></td>
 
-  // const onChangeTask = (ev, task) => {
-  //   if (ev.target.checked) {
-  //     task.completed = true;
-  //     updateTask(task);
-  //   } else {
-  //     task.completed = false;
-  //     updateTask(task);
-  //   }
-  // };
+          <td>
+            {" "}
+            <Button variant="primary">Show Slots</Button>{" "}
+          </td>
+        </tr>
+      </>
+    );
+  }
+}
 
-  return (
-    <Link to={`/exam/${exam.eid}`}>
-      <ListGroup.Item>{exam.name}</ListGroup.Item>
-    </Link>
-  );
-};
 export default ExamItem;

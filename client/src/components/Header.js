@@ -157,7 +157,7 @@ const Header = (props) => {
                   </Nav.Link>
                   <Nav.Link
                     as={NavLink}
-                    to="/exams"
+                    to="/StudentExams"
                     onClick={() => props.getStudentExams()}
                   >
                     My Exams

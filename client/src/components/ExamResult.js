@@ -17,8 +17,7 @@ const ExamResult = (props) => {
               <thead>
                 <tr>
                   <th>Student ID</th>
-                  <th>Date</th>
-                  <th>Start Time</th>
+                  <th>Date and Start Time</th>
                   <th>Mark</th>
                   <th>Exam Result</th>
                   <th>Booking State</th>

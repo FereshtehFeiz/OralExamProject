@@ -24,7 +24,8 @@ const createExamSlots = function (row) {
 exports.getExamSlots = function (cid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM slots INNER JOIN student_exam on student_exam.eid = slots.eid WHERE slots.state = 0 and slots.cid = ?";
+      "SELECT * FROM student_exam INNER JOIN exams ON exams.eid = student_exam.examId INNER JOIN slots ON slots.eid = exams.eid " +
+      "WHERE slots.state = 1 and exams.cid = ?";
     db.all(sql, [cid], (err, rows) => {
       if (err) {
         console.log(err);
@@ -39,15 +40,13 @@ exports.getExamSlots = function (cid) {
 };
 
 /**
- * Get results of oral exams booked or not booked for teacher
+ * Get results of oral exams booked or not booked to teacher
  */
 
 exports.getResultView = function (cid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT studentId,startTime,date,slots.state,mark FROM student_exam " +
-      "INNER JOIN slots on slots.slotId = student_exam.slotId " +
-      "WHERE student_exam.cid = ? ";
+      "SELECT * FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid WHERE student_exam.cid = ?";
     db.all(sql, [cid], (err, rows) => {
       if (err) {
         reject(err);
@@ -59,33 +58,3 @@ exports.getResultView = function (cid) {
     });
   });
 };
-
-// exports.createExamTimeSlot = function (timeSlot) {
-//   if (timeSlot.date) {
-//     timeSlot.date = moment(timeSlot.date).format("YYYY-MM-DD HH:mm");
-//   }
-//   return new Promise((resolve, reject) => {
-//     const sql =
-//       "INSERT INTO slots(state, date, slotDuration, startTime,eid,cid) VALUES(0,?,?,?,?,?,?)";
-//     db.run(
-//       sql,
-//       [
-//         timeSlot.state,
-//         timeSlot.date,
-//         timeSlot.slotDuration,
-//         timeSlot.startTime,
-//         timeSlot.eid,
-//         timeSlot.cid,
-//       ],
-//       function (err) {
-//         if (err) {
-//           console.log(err);
-//           reject(err);
-//         } else {
-//           console.log(this.lastID);
-//           resolve(this.lastID);
-//         }
-//       }
-//     );
-//   });
-// };

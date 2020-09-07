@@ -56,7 +56,6 @@ class OralExamItem extends React.Component {
         <tr key={this.props.oralExamItem.slotId}>
           <td>{this.props.oralExamItem.studentId}</td>
           <td>{this.props.oralExamItem.date}</td>
-          <td>{this.props.oralExamItem.startTime}</td>
           <td>
             {" "}
             {this.props.oralExamItem.attendance === 0 ? "Absent" : "Present"}

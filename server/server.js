@@ -77,12 +77,13 @@ app.post("/api/studentlogin", (req, res) => {
 });
 
 //get exams of student
-app.get("/api/exams", (req, res) => {
-  const student = req.user && req.user.user;
-  studentexamDao
-    .getStudentExams(student)
+app.get("/api/StudentExams/:studentId", (req, res) => {
+  console.log(req.params.studentId);
+  studentDao
+    .getStudentExams(req.params.studentId)
     .then((exams) => {
       res.json(exams);
+      console.log(exams);
     })
     .catch((err) => {
       res.status(500).json({
@@ -207,16 +208,15 @@ app.post("/api/addSession", (req, res) => {
   if (!session) {
     res.status(400).end();
   } else {
-    sessionDao.createSession(session)
+    sessionDao
+      .createSession(session)
       .then((response) => {
         if (response)
-          sessionDao.addStudents(session)
-            .then((response) => {
-              console.log(response);
-              res.status(201).json(response);
-            })
-        else
-          res.status(500).json(false);
+          sessionDao.addStudents(session).then((response) => {
+            console.log(response);
+            res.status(201).json(response);
+          });
+        else res.status(500).json(false);
       })
       .catch((err) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
