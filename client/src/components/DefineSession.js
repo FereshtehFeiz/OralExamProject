@@ -9,6 +9,8 @@ import { AuthContext } from "../auth/AuthContext";
 import Modal from "react-bootstrap/Modal";
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl'
+import Alert from "react-bootstrap/Alert";
+import Moment from 'moment'
 
 class DefineSession extends React.Component {
   constructor(props) {
@@ -18,12 +20,15 @@ class DefineSession extends React.Component {
       duration: 0,
       sessionDate: null,
       difference: 0,//availableSlots
-      errorMsg: false,
+      msgStatus: false,
+      msg: '',
       show: false,
       rowsData: [],
       totalTimeSlot: this.props.totalTimeSlot,
       studentsNumber: this.props.studentsNumber,
-      timeSlot: this.props.timeSlot
+      timeSlot: this.props.timeSlot,
+      saveStatus: false,
+      slotsSaved: false
     };
 
     this.state.submitted = false;
@@ -53,6 +58,37 @@ class DefineSession extends React.Component {
   };
 
   calculateSession = () => {
+
+    ////////////////////// validate modal fields //////////////////////////////////////////////
+    if (this.state.duration === 0) {
+      this.setState({ msgStatus: true, msg: 'Duration can not be zero!' });
+      return;
+    }
+    if (this.state.sessionDate === null) {
+      this.setState({ msgStatus: true, msg: 'Date can not be null!' });
+      return;
+    }
+    let inpDate = new Date(this.state.sessionDate);
+    let currDate = new Date();
+    if (inpDate.setHours(0, 0, 0, 0) < currDate.setHours(0, 0, 0, 0)) {
+      this.setState({ msgStatus: true, msg: 'Selected date can not be in the past!' });
+      return;
+    }
+
+    let dateStatus = true;
+    this.state.rowsData.forEach((item) => {
+      if (item.sessionDate === this.state.sessionDate) {
+        dateStatus = false;
+        return;
+      }
+    });
+
+    if (!dateStatus) {
+      this.setState({ msgStatus: true, msg: 'Selected date is assigned for other session!' });
+      return;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     let difference = (this.state.duration - this.state.totalTimeSlot) / this.state.timeSlot;
     if (difference >= 0)
       this.setState({ totalTimeSlot: this.state.totalTimeSlot - this.state.duration })
@@ -62,23 +98,32 @@ class DefineSession extends React.Component {
     let rowData = {
       startTime: this.state.startTime,
       sessionDate: this.state.sessionDate,
+      fulldate: Moment(this.state.sessionDate + ' ' + this.state.startTime).format('YYYY-MM-DD HH:mm'),
       duration: this.state.duration
     }
     rowsData.push(rowData);
-    this.setState({ rowsData, difference })
+    if (difference >= 0)
+      this.setState({ saveStatus: true })
+    this.setState({ rowsData, difference, msgStatus: false })
     this.hideModal();
   }
 
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
+
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-      let session = Object.assign({}, this.state);
-      this.props.addSession(session);
-      this.setState({ submitted: true });
+      let session = Object.assign({
+        data: this.state.rowsData,
+        examId: this.props.examId,
+        timeSlot: this.props.timeSlot,
+        students: this.props.selectedStudents
+      });
+      await this.props.addSession(session);
+      this.setState({ slotsSaved: this.props.slotsSaved });
     }
   };
 
@@ -123,7 +168,7 @@ class DefineSession extends React.Component {
                   <th scope="col">#</th>
                   <th scope="col">Session Date</th>
                   <th scope="col">Start Time</th>
-                  <th scope="col">Total Duration</th>
+                  <th scope="col">Session Duration</th>
                 </tr>
               </thead>
               <tbody>
@@ -142,8 +187,13 @@ class DefineSession extends React.Component {
 
             <Form method="POST" onSubmit={(event) => this.handleSubmit(event)}>
               <Form.Group>
-                <Button variant="primary" type="submit" onClick={this.handleSubmit}>Save</Button>{" "}
-                <Button variant="primary" onClick={this.showModal}>Add session</Button>{" "}
+                <div className={this.state.slotsSaved ? 'invisible' : 'visible'}>
+                  <Button variant="primary" type="submit" disabled={this.state.saveStatus ? false : true} onClick={this.handleSubmit}>Save</Button>{" "}
+                  <Button variant="primary" onClick={this.showModal}>Add session</Button>{" "}
+                </div>
+                <div className={this.state.slotsSaved ? 'visible' : 'invisible'}>
+                  <Alert variant='success'>Data has been saved successfully!</Alert>
+                </div>
 
                 <Modal show={this.state.show} onHide={this.hideModal} backdrop="static" keyboard={false}>
                   <Modal.Header closeButton>
@@ -172,7 +222,6 @@ class DefineSession extends React.Component {
                         }
                       />
                     </Form.Group>
-
                     <Form.Group controlId="duration">
                       {/* <Form.Label>Duration</Form.Label>
                       <Form.Control
@@ -224,6 +273,7 @@ class DefineSession extends React.Component {
 
 
                     </Form.Group>
+                    {this.state.msgStatus ? <Alert variant='danger'>{this.state.msg}</Alert> : null}
                   </Modal.Body>
                   <Modal.Footer>
                     <Button variant="secondary" onClick={this.hideModal}>

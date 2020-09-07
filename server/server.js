@@ -207,11 +207,16 @@ app.post("/api/addSession", (req, res) => {
   if (!session) {
     res.status(400).end();
   } else {
-    const user = req.user && req.user.user;
-    session.user = user;
-    sessionDao
-      .createSession(session)
-      .then((id) => res.status(201).json({ id: id }))
+    sessionDao.createSession(session)
+      .then((response) => {
+        if (response)
+          sessionDao.addStudents(session)
+            .then((response) => {
+              res.status(201).json(response);
+            })
+        else
+          res.status(500).json(false);
+      })
       .catch((err) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
       });

@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
-import { Link } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert'
 import Form from "react-bootstrap/Form";
 
 class CreateExam extends React.Component {
@@ -16,11 +16,16 @@ class CreateExam extends React.Component {
       totalTimeSlot: 0,
       selectedStudentsID: [],
       timeSlot: 10,
+      msg: null
     };
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
+    if (this.state.selectedStudentsID.length === 0) {
+      this.setState({ msg: 'Please select at least one student!' });
+      return
+    }
     const form = event.currentTarget;
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -40,14 +45,12 @@ class CreateExam extends React.Component {
     this.setState({ [name]: value });
   };
 
-  onCheckChange = (event) => {
+  onCheckChange = async (event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
-
-    // console.log(value);
     const name = target.name;
 
-    this.setState({ [name]: value });
+    await this.setState({ [name]: value });
 
     if (target.type === "checkbox") {
       if (value === true) {
@@ -143,6 +146,7 @@ class CreateExam extends React.Component {
                 <Form.Control
                   type="number"
                   name="timeSlot"
+                  min="0"
                   // value={this.state.timeSlot}
                   defaultValue={this.state.timeSlot}
                   onChange={(ev) =>
@@ -153,11 +157,14 @@ class CreateExam extends React.Component {
                 ></Form.Control>
               </Form.Group>
 
-              <Button
+              <Button className="mb-2"
                 variant="primary"
                 onClick={(ev) => this.handleSubmit}
                 type="submit">Create Session
               </Button>
+              {
+                this.state.msg ? <Alert variant='danger'>{this.state.msg}</Alert> : null
+              }
             </Form>
           </>
         )}
