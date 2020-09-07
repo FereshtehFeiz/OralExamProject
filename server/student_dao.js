@@ -22,7 +22,8 @@ const createStudentExam = function (row) {
     row.slotId,
     row.cid,
     row.examId,
-    row.attendance
+    row.attendance,
+    row.withdraw
   );
 };
 
@@ -92,15 +93,20 @@ exports.getBookedSlots = function (studentId) {
 exports.updateExam = function (slotId, NewStudentExam) {
   return new Promise((resolve, reject) => {
     const sql =
-      "UPDATE student_exam SET mark = ?, attendance = ? WHERE slotId = ?";
+      "UPDATE student_exam SET mark = ?, attendance = ?, withdraw = ? WHERE slotId = ?";
     db.run(
       sql,
-      [NewStudentExam.mark, NewStudentExam.attendance, slotId],
+      [
+        NewStudentExam.mark,
+        NewStudentExam.attendance,
+        NewStudentExam.withdraw,
+        slotId,
+      ],
       (err) => {
         if (err) {
           console.log(err);
           reject(err);
-        } else resolve(null);
+        } else resolve(slotId);
       }
     );
   });

@@ -246,7 +246,7 @@ app.post("/api/createExam", (req, res) => {
       .createExam(exam)
       .then((id) => {
         console.log(`examId is :${id}`);
-        res.status(201).json({ id: id })
+        res.status(201).json({ id: id });
       })
       .catch((err) => {
         res.status(500).json({ errors: [{ param: "Server", msg: err }] });
@@ -288,22 +288,23 @@ app.get("/api/resultView/:courseId", (req, res) => {
 
 //PUT /oralExamItem/<slotId>  update mark and attendance for given slotId
 app.put("/api/oralExamItem/:slotId", (req, res) => {
-  if (!req.body.id) {
-    res.status(400).end();
-  } else {
-    const StudentExam = req.body;
-    // const user = req.user && req.user.user;
-    // task.user = user;
-    console.log(StudentExam);
-    studentDao
-      .updateExam(req.params.slotId, StudentExam)
-      .then((result) => res.status(200).end())
-      .catch((err) =>
-        res.status(500).json({
-          errors: [{ param: "Server", msg: err }],
-        })
-      );
-  }
+  // if (!req.body.id) {
+  //   res.status(400).end();
+  // } else {
+  const exam = req.body;
+  // const user = req.user && req.user.user;
+  // task.user = user;
+  console.log(exam);
+  studentDao
+    .updateExam(req.params.slotId, exam)
+    .then(() => res.status(200).end())
+    .catch((err) =>
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      })
+    );
+  console.log(result);
+  // }
 });
 
 //activate server

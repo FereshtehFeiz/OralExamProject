@@ -13,6 +13,7 @@ const createExamSlots = function (row) {
     row.state,
     row.mark,
     row.attendance,
+    row.withdraw,
     row.cid
   );
 };

@@ -19,14 +19,25 @@ class OralExamItem extends React.Component {
           <td>{this.props.resultItem.studentId}</td>
           <td>{this.props.resultItem.date}</td>
           <td>{this.props.resultItem.startTime}</td>
-          <td>{this.props.resultItem.mark}</td>
+
+          <td>
+            {this.props.resultItem.mark === 0 ? (
+              <span className="badge badge-danger">Not Booked</span>
+            ) : (
+              this.props.resultItem.mark
+            )}{" "}
+          </td>
+
           <td>
             {this.props.resultItem.mark >= 18 ? (
               <span className="badge badge-success">Passed</span>
-            ) : (
+            ) : this.props.resultItem.mark < 18 ? (
               <span className="badge badge-warning">Failed</span>
+            ) : (
+              <span className="badge badge-danger">Not Booked</span>
             )}
           </td>
+
           <td>
             {this.props.resultItem.state === 0 ? (
               <span className="badge badge-danger">Not Booked</span>

@@ -348,16 +348,10 @@ class App extends React.Component {
       });
   };
 
-  updateExam = () => {
-    API.updateExam(this.state.OralExams)
-      .then(() => {
-        //get the updated list of students marks from the server
-        API.getOralExamTimeSlots(this.state.courseId).then((OralExams) =>
-          this.setState({
-            OralExams: OralExams,
-          })
-        );
-      })
+  updateExam = (examResult) => {
+    API.updateExam(examResult)
+      .then(() => {})
+
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
@@ -495,8 +489,7 @@ class App extends React.Component {
 
             <Route path="/examSlots">
               <Row className="vheight-100">
-                <Col sm={4}></Col>
-                <Col sm={6} className="below-nav">
+                <Col className="below-nav">
                   <h4>List of slots for taking oral exam</h4>
                   <OralExamList
                     OralExams={this.state.OralExams}
@@ -508,8 +501,7 @@ class App extends React.Component {
 
             <Route path="/resultView">
               <Row className="vheight-100">
-                <Col sm={4}></Col>
-                <Col sm={6} className="below-nav">
+                <Col className="below-nav">
                   <h4>Result Overview</h4>
                   <ExamResult OralExamResult={this.state.OralExamResult} />
                 </Col>
