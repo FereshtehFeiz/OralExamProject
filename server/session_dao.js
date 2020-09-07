@@ -58,9 +58,9 @@ exports.addStudents = function (session) {
 
   return new Promise((resolve, reject) => {
     const sql =
-      "INSERT INTO student_exam(studentId,examId, state, mark, slotId, cid,attendance) VALUES(?,?,?,?,?,?,?)";
+      "INSERT INTO student_exam(studentId,examId, state, mark, cid,attendance) VALUES(?,?,?,?,?,?)";
     students.forEach((id) => {
-      db.run(sql, [id, examId, 0, 0, 0, 0, 0], function (err) {
+      db.run(sql, [id, examId, 0, 0, 0, 0], function (err) {
         if (err) {
           console.log(err);
           reject(false);
