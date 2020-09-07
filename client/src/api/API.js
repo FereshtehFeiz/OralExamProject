@@ -209,7 +209,7 @@ async function addSession(session) {
     })
       .then((response) => {
         if (response.ok) {
-          resolve(null);
+          resolve(response.json());
         } else {
           // analyze the cause of error
           response

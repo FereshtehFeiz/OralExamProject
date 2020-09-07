@@ -38,6 +38,7 @@ class App extends React.Component {
       sessionNumber: 1,
       session: null,
       examId: 0,
+      slotsSaved: false
     };
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
@@ -269,28 +270,23 @@ class App extends React.Component {
   //   }
   // };
 
-  addSession = (session) => {
-    //ADD Session
-    API.addSession(session)
-      .then(() => {
-        this.setState({
-          session: session,
-        });
+  //ADD Session
+  addSession = async (session) => {
+    console.log(session);
+    await API.addSession(session)
+      .then((res) => {
+        this.setState({ slotsSaved: res });
       })
-      .catch((errorObj) => {
-        this.handleErrors(errorObj);
-      });
+      .catch((errorObj) => { this.handleErrors(errorObj); });
   };
 
+  //ADD Exam and then get Exam ID
   createExam = (exam) => {
-    //ADD Exam and then get Exam ID
     API.createExam(exam)
       .then((res) => {
         this.setState({ examId: res.id });
       })
-      .catch((errorObj) => {
-        this.handleErrors(errorObj);
-      });
+      .catch((errorObj) => { this.handleErrors(errorObj); });
   };
 
   // editTask = (task) => {
@@ -453,6 +449,7 @@ class App extends React.Component {
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
                   <DefineSession
+                    selectedStudents={this.state.selectedStudents}
                     timeSlot={this.state.timeSlot}
                     studentsNumber={this.state.studentsNumber}
                     totalTimeSlot={this.state.totalTimeSlot}
@@ -460,6 +457,7 @@ class App extends React.Component {
                     session={this.state.session}
                     addSession={this.addSession}
                     examId={this.state.examId}
+                    slotsSaved={this.state.slotsSaved}
                   />
                 </Col>
               </Row>
