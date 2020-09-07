@@ -55,10 +55,8 @@ exports.createSession = function (session) {
 
 
 exports.addStudents = function (session) {
-  //const students = session.students;
   const examId = session.examId;
-  const students = [274475, 274485, 275645];
-  console.log(students);
+  const students = session.students;
 
   return new Promise((resolve, reject) => {
     const sql = "INSERT INTO student_exam(studentId, state, mark, slotId, cid, examId,attendance) VALUES(?,?,?,?,?,?,?)";
@@ -70,7 +68,7 @@ exports.addStudents = function (session) {
           console.log(err);
           reject(false);
         } else {
-          resolve(true);
+          resolve(students);
         }
       });
 

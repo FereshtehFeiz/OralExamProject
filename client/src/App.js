@@ -40,6 +40,7 @@ class App extends React.Component {
       examId: 0,
       slotsSaved: false
     };
+    this.setStudentsIDList = this.setStudentsIDList.bind(this);
     this.setNumberofStudents = this.setNumberofStudents.bind(this);
     this.setTimeSlot = this.setTimeSlot.bind(this);
     this.setTotalTimeSlot = this.setTotalTimeSlot.bind(this);
@@ -272,7 +273,7 @@ class App extends React.Component {
 
   //ADD Session
   addSession = async (session) => {
-    console.log(session);
+
     await API.addSession(session)
       .then((res) => {
         this.setState({ slotsSaved: res });
@@ -350,12 +351,16 @@ class App extends React.Component {
 
   updateExam = (examResult) => {
     API.updateExam(examResult)
-      .then(() => {})
+      .then(() => { })
 
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
   };
+
+  setStudentsIDList(list) {
+    this.setState({ selectedStudents: list });
+  }
 
   setNumberofStudents(checkedCount) {
     this.setState({ studentsNumber: checkedCount });
@@ -429,6 +434,7 @@ class App extends React.Component {
                     studentsOfCourse={this.state.studentsOfCourse}
                     checkedCount={this.state.checkedCount}
                     setNumberofStudents={this.setNumberofStudents}
+                    setStudentsIDList={this.setStudentsIDList}
                     setTimeSlot={this.setTimeSlot}
                     setTotalTimeSlot={this.setTotalTimeSlot}
                     exam={this.state.exam}

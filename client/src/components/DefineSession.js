@@ -11,6 +11,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl'
 import Alert from "react-bootstrap/Alert";
 import Moment from 'moment'
+import Spinner from 'react-bootstrap/Spinner';
 
 class DefineSession extends React.Component {
   constructor(props) {
@@ -28,7 +29,8 @@ class DefineSession extends React.Component {
       studentsNumber: this.props.studentsNumber,
       timeSlot: this.props.timeSlot,
       saveStatus: false,
-      slotsSaved: false
+      slotsSaved: false,
+      btnLoading: false
     };
 
     this.state.submitted = false;
@@ -113,6 +115,8 @@ class DefineSession extends React.Component {
     event.preventDefault();
     const form = event.currentTarget;
 
+    await this.setState({ btnLoading: true });
+
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
@@ -124,6 +128,7 @@ class DefineSession extends React.Component {
       });
       await this.props.addSession(session);
       this.setState({ slotsSaved: this.props.slotsSaved });
+      await this.setState({ btnLoading: false });
     }
   };
 
@@ -188,8 +193,18 @@ class DefineSession extends React.Component {
             <Form method="POST" onSubmit={(event) => this.handleSubmit(event)}>
               <Form.Group>
                 <div className={this.state.slotsSaved ? 'invisible' : 'visible'}>
-                  <Button variant="primary" type="submit" disabled={this.state.saveStatus ? false : true} onClick={this.handleSubmit}>Save</Button>{" "}
+
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={this.state.saveStatus ? false : true}
+                    onClick={this.handleSubmit}>
+                    {this.state.btnLoading ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" /> : null}
+                    {this.state.btnLoading ? 'Saving...' : 'Save'}
+                  </Button>{" "}
+
                   <Button variant="primary" onClick={this.showModal}>Add session</Button>{" "}
+
                 </div>
                 <div className={this.state.slotsSaved ? 'visible' : 'invisible'}>
                   <Alert variant='success'>Data has been saved successfully!</Alert>
