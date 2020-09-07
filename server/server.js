@@ -212,6 +212,7 @@ app.post("/api/addSession", (req, res) => {
         if (response)
           sessionDao.addStudents(session)
             .then((response) => {
+              console.log(response);
               res.status(201).json(response);
             })
         else

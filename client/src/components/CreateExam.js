@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
@@ -36,6 +36,7 @@ class CreateExam extends React.Component {
       });
       this.setState({ submitted: true });
     }
+    this.props.setStudentsIDList(this.state.selectedStudentsID);
     this.props.setNumberofStudents(this.state.checkedCount);
     this.props.setTimeSlot(this.state.timeSlot);
     this.props.setTotalTimeSlot(this.state.timeSlot, this.state.checkedCount);
@@ -45,44 +46,19 @@ class CreateExam extends React.Component {
     this.setState({ [name]: value });
   };
 
-  onCheckChange = async (event) => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+  onCheckChange = async (studentId, checked) => {
 
-    await this.setState({ [name]: value });
-
-    if (target.type === "checkbox") {
-      if (value === true) {
-        // add student ID to list
-        this.setState((state) => {
-          const selectedStudentsID = state.selectedStudentsID.concat([name]);
-          return { selectedStudentsID };
-        });
-
-        // access to the previous value by means of prevState
-        this.setState((prevState) => {
-          return {
-            checkedCount: prevState.checkedCount + 1,
-          };
-        });
-      } else {
-        // remove student ID from list
-        this.setState((state) => {
-          var index = this.state.selectedStudentsID.indexOf([name]);
-          const selectedStudentsID = state.selectedStudentsID.splice(index, 1);
-          return {
-            selectedStudentsID,
-          };
-        });
-
-        this.setState((prevState) => {
-          return {
-            checkedCount: prevState.checkedCount - 1,
-          };
-        });
-      }
+    let arr = this.state.selectedStudentsID;
+    if (checked) {
+      arr.push(studentId)
+      await this.setState({ selectedStudentsID: arr });
     }
+    else {
+      let newArr = arr.filter(item => item !== studentId)
+      await this.setState({ selectedStudentsID: newArr });
+    }
+
+    await this.setState({ checkedCount: this.state.selectedStudentsID.length });
   };
 
   createStudents = (s) => {
@@ -97,14 +73,12 @@ class CreateExam extends React.Component {
               type="checkbox"
               className="custom-control-input"
               id={"check-t" + s.studentId}
-              onChange={this.onCheckChange}
+              onChange={(event) => this.onCheckChange(s.studentId, event.target.checked)}
             />
 
             <label
               className="custom-control-label"
-              htmlFor={"check-t" + s.studentId}
-            >
-              {""}
+              htmlFor={"check-t" + s.studentId}>{""}
             </label>
           </div>
         </td>
