@@ -58,7 +58,11 @@ app.post("/api/studentlogin", (req, res) => {
         //   sameSite: true,
         //   maxAge: 1000 * expireTime,
         // });
-        res.json({ sid: student.sid, name: student.name });
+        res.json({
+          sid: student.sid,
+          fullname: student.fullname,
+          studentId: student.studentId,
+        });
         // }
       }
     })
@@ -74,9 +78,9 @@ app.post("/api/studentlogin", (req, res) => {
 
 //get exams of student
 app.get("/api/exams", (req, res) => {
-  // const sid = req.user && req.user.user;
+  const student = req.user && req.user.user;
   studentexamDao
-    .getStudentExams()
+    .getStudentExams(student)
     .then((exams) => {
       res.json(exams);
     })
