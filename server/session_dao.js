@@ -21,7 +21,6 @@ const createSession = function (row) {
  * To get the id, this.lastID is used. To use the "this", db.run uses "function (err)" instead of an arrow function.
  */
 exports.createSession = function (session) {
-
   const timeSlot = session.timeSlot;
   const examId = session.examId;
   const data = session.data;
@@ -29,14 +28,16 @@ exports.createSession = function (session) {
   // console.log(students);
 
   return new Promise((resolve, reject) => {
-    const sql = "INSERT INTO slots(state, date, slotDuration, startTime, eid, cid) VALUES(?,?,?,?,?,?)";
+    const sql = "INSERT INTO slots(state,date,eid) VALUES(?,?,?)";
 
     data.forEach((row) => {
-      let count = (row.duration / timeSlot) - 1;
+      let count = row.duration / timeSlot - 1;
       for (let i = 0; i <= count; i++) {
-        let newDate = Moment(row.fulldate).add(timeSlot, 'minutes').format('YYYY-MM-DD HH:mm');
+        let newDate = Moment(row.fulldate)
+          .add(timeSlot, "minutes")
+          .format("YYYY-MM-DD HH:mm");
 
-        db.run(sql, [0, row.fulldate, 0, 0, examId, 0], function (err) {
+        db.run(sql, [0, row.fulldate, examId], function (err) {
           if (err) {
             console.log(err);
             reject(false);
@@ -46,24 +47,20 @@ exports.createSession = function (session) {
         });
 
         row.fulldate = newDate;
-      };
-
+      }
     });
-
   });
 };
-
 
 exports.addStudents = function (session) {
   const examId = session.examId;
   const students = session.students;
 
   return new Promise((resolve, reject) => {
-    const sql = "INSERT INTO student_exam(studentId, state, mark, slotId, cid, examId,attendance) VALUES(?,?,?,?,?,?,?)";
+    const sql =
+      "INSERT INTO student_exam(studentId,examId, state, mark, slotId, cid,attendance) VALUES(?,?,?,?,?,?,?)";
     students.forEach((id) => {
-
-
-      db.run(sql, [id, 0, 0, 0, 0, examId, 0], function (err) {
+      db.run(sql, [id, examId, 0, 0, 0, 0, 0], function (err) {
         if (err) {
           console.log(err);
           reject(false);
@@ -71,9 +68,6 @@ exports.addStudents = function (session) {
           resolve(students);
         }
       });
-
-
-    })
+    });
   });
-
 };
