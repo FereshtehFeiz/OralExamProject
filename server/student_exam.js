@@ -1,5 +1,16 @@
 class StudentExam {
-  constructor(eid, studentId, state, mark, slotId, cid, examId, attendance) {
+  constructor(
+    eid,
+    studentId,
+    state,
+    mark,
+    slotId,
+    cid,
+    examId,
+    attendance,
+    withdraw,
+    name
+  ) {
     if (eid) {
       this.eid = eid;
     }
@@ -12,6 +23,7 @@ class StudentExam {
     this.examId = examId;
     this.attendance = attendance || false;
     this.withdraw = withdraw || false;
+    this.name = name;
   }
 }
 

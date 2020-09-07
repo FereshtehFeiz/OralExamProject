@@ -10,7 +10,18 @@ const createStudent = function (row) {
 };
 
 const createStudentExams = function (row) {
-  return new Exam(row.eid, row.name);
+  return new StudentExam(
+    row.eid,
+    row.studentId,
+    row.state,
+    row.mark,
+    row.slotId,
+    row.cid,
+    row.examId,
+    row.attendance,
+    row.withdraw,
+    row.name
+  );
 };
 
 const createStudentExam = function (row) {
@@ -50,11 +61,12 @@ exports.getStudentID = function (sid) {
  * Get exams of given Student ID
  */
 
-exports.getStudentExams = function () {
+exports.getStudentExams = function (sid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM student_exam INNER JOIN courses on courses.cid = student_exam.cid";
-    db.all(sql, [], (err, rows) => {
+      "SELECT * FROM student_exam INNER JOIN courses on courses.cid = student_exam.cid " +
+      "WHERE (mark < 18 OR withdraw = 1 OR attendance = 0 OR examId = NULL) AND student_exam.studentId = ?";
+    db.all(sql, [sid], (err, rows) => {
       if (err) reject(err);
       else if (rows.length === 0) resolve(undefined);
       else {

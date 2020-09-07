@@ -104,6 +104,7 @@ async function isStudent() {
   const studentJson = await response.json();
   if (response.ok) {
     return studentJson;
+    console.log(studentJson);
   } else {
     let err = { status: response.status, errObj: studentJson };
     throw err; // An object with the error coming from the server
@@ -178,7 +179,21 @@ async function getStudentExams() {
   const examsJson = await response.json();
   if (response.ok) {
     //return tasksJson.map((t) => Task.from(t));
-    return examsJson.map((t) => new StudentExam(t.eid, t.name));
+    return examsJson.map(
+      (t) =>
+        new StudentExam(
+          t.eid,
+          t.studentId,
+          t.state,
+          t.mark,
+          t.slotId,
+          t.cid,
+          t.examId,
+          t.attendance,
+          t.withdraw,
+          t.name
+        )
+    );
   } else {
     let err = { status: response.status, errObj: examsJson };
     throw err; // An object with the error coming from the server

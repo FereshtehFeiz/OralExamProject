@@ -155,7 +155,11 @@ const Header = (props) => {
                   <Nav.Link as={NavLink} to="/bookings">
                     My Bookings
                   </Nav.Link>
-                  <Nav.Link as={NavLink} to="/exams">
+                  <Nav.Link
+                    as={NavLink}
+                    to="/exams"
+                    onClick={() => props.getStudentExams()}
+                  >
                     My Exams
                   </Nav.Link>
 

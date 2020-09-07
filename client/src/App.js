@@ -59,7 +59,7 @@ class App extends React.Component {
     //check if the student is logined
     API.isStudent()
       .then((student) => {
-        this.setState({ authStudent: student });
+        this.setState({ authStudent: student, studentId: student.studentId });
       })
       .catch((errsid) => {
         this.setState({ invalidSid: errsid.errorObj });
@@ -144,15 +144,18 @@ class App extends React.Component {
   studentlogin = (sid) => {
     API.studentLogin(sid)
       .then((student) => {
+        // API.getStudentExams().then((studentExams) => {
         // API.getBookedSlots()
         //   .then((bookedSlots) => {
         this.setState({
           authStudent: student,
+          // studentExams: studentExams,
           // bookedSlots: bookedSlots,
           authUser: null,
           authErr: null,
           invalidSid: null,
         });
+        // });
         // })
         // .catch((errorObj) => {
         //   this.handleErrors(errorObj);
@@ -166,13 +169,13 @@ class App extends React.Component {
       });
   };
 
-  // getStudentExams = () => {
-  //   API.getStudentExams()
-  //     .then((exams) => this.setState({ exams: exams }))
-  //     .catch((errorObj) => {
-  //       this.handleErrors(errorObj);
-  //     });
-  // };
+  getStudentExams = (sid) => {
+    API.getStudentExams(sid)
+      .then((Studentexams) => this.setState({ Studentexams: Studentexams }))
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
 
   // getBookedSlots = () => {
   //   API.getBookedSlots()
@@ -386,6 +389,7 @@ class App extends React.Component {
       loginUser: this.login,
       logoutUser: this.logout,
       authStudent: this.state.authStudent,
+      studentId: this.state.studentId,
       invalidSid: this.state.invalidSid,
       loginStudent: this.studentlogin,
       logoutStudent: this.studentlogout,
