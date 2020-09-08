@@ -3,13 +3,13 @@ import { AuthContext } from "../auth/AuthContext";
 import Table from "react-bootstrap/Table";
 import { Redirect } from "react-router-dom";
 
-class BookedSlots extends React.Component {
+class BookedSlotsList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  createBookedSlots = (b) => {
+  createBookedSlotsList = (b) => {
     return (
       <tr>
         <td></td>
@@ -23,7 +23,7 @@ class BookedSlots extends React.Component {
       <AuthContext.Consumer>
         {(context) => (
           <>
-            {context.authErr && <Redirect to="/login"></Redirect>}
+            {/* {context.authStudent && <Redirect to="/login"></Redirect>} */}
 
             <Table striped bordered hover variant="white">
               <thead>
@@ -44,4 +44,4 @@ class BookedSlots extends React.Component {
   }
 }
 
-export default BookedSlots;
+export default BookedSlotsList;

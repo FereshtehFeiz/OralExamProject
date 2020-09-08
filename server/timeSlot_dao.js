@@ -58,3 +58,22 @@ exports.getResultView = function (cid) {
     });
   });
 };
+
+/**
+ * Get Free slots to book
+ */
+exports.getFreeExamSlots = function (examId) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "SELECT * FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid WHERE eid = ? AND slots.state = 0";
+    db.all(sql, [examId], (err, rows) => {
+      if (err) reject(err);
+      else if (rows.length === 0) resolve(undefined);
+      else {
+        let Exams = rows.map((row) => createExamSlots(row));
+        resolve(Exams);
+        console.log(Exams);
+      }
+    });
+  });
+};

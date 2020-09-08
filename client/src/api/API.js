@@ -281,21 +281,6 @@ async function createExam(exam) {
   });
 }
 
-async function getBookedSlots() {
-  let url = "/bookedSlots";
-  const response = await fetch(baseURL + url);
-  const examsJson = await response.json();
-  if (response.ok) {
-    //return tasksJson.map((t) => Task.from(t));
-    return examsJson.map(
-      (t) => new TimeSlot(t.name, t.mark, t.startTime, t.date, t.state)
-    );
-  } else {
-    let err = { status: response.status, errObj: examsJson };
-    throw err; // An object with the error coming from the server
-  }
-}
-
 async function getOralExamTimeSlots(courseId) {
   console.log(courseId);
   let url = "/examSlots/" + courseId;
@@ -392,6 +377,62 @@ async function getResultView(courseId) {
   }
 }
 
+async function getFreeExamSlots(examId) {
+  console.log(examId);
+  let url = "/slots/" + examId;
+  const response = await fetch(baseURL + url);
+  const slotsJson = await response.json();
+  if (response.ok) {
+    //return tasksJson.map((t) => Task.from(t));
+    return slotsJson.map(
+      (t) =>
+        new OralTimeSlot(
+          t.slotId,
+          t.startTime,
+          t.date,
+          t.state,
+          t.studentId,
+          t.mark,
+          t.attendance,
+          t.withdraw,
+          t.cid
+        )
+    );
+  } else {
+    let err = { status: response.status, errObj: slotsJson };
+    console.log(err);
+    throw err; // An object with the error coming from the server
+  }
+}
+
+async function getBookedSlots(studentId) {
+  console.log(studentId);
+  let url = "/bookedSlots/" + studentId;
+  const response = await fetch(baseURL + url);
+  const slotsJson = await response.json();
+  if (response.ok) {
+    //return tasksJson.map((t) => Task.from(t));
+    return slotsJson.map(
+      (t) =>
+        new OralTimeSlot(
+          t.slotId,
+          t.startTime,
+          t.date,
+          t.state,
+          t.studentId,
+          t.mark,
+          t.attendance,
+          t.withdraw,
+          t.cid
+        )
+    );
+  } else {
+    let err = { status: response.status, errObj: slotsJson };
+    console.log(err);
+    throw err; // An object with the error coming from the server
+  }
+}
+
 const API = {
   isAuthenticated,
   userLogin,
@@ -408,5 +449,7 @@ const API = {
   getOralExamTimeSlots,
   updateExam,
   getResultView,
+  getFreeExamSlots,
+  getBookedSlots,
 };
 export default API;

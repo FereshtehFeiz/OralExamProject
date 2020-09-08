@@ -4,7 +4,7 @@ import { AuthContext } from "../auth/AuthContext";
 import Table from "react-bootstrap/Table";
 import { Link } from "react-router-dom";
 
-class StudentExamsList extends React.Component {
+class FreeSlotsList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -13,14 +13,7 @@ class StudentExamsList extends React.Component {
   createExamItems = (e) => {
     return (
       <tr>
-        <td>
-          <Link
-            // onClick={() => this.props.getFreeExamSlots()}
-            to={`/slots/${e.examId}`}
-          >
-            {e.name}
-          </Link>
-        </td>
+        <td></td>
       </tr>
     );
   };
@@ -35,10 +28,11 @@ class StudentExamsList extends React.Component {
               <Table striped bordered hover variant="white">
                 <thead>
                   <tr>
-                    <th>Exam Name</th>
+                    <th>Date and Start Time</th>
+                    <th>State</th>
+                    <th>Select to Book</th>
                   </tr>
                 </thead>
-                {this.props.StudentExams.map(this.createExamItems)}
               </Table>
             )}
           </>
@@ -48,4 +42,4 @@ class StudentExamsList extends React.Component {
   }
 }
 
-export default StudentExamsList;
+export default FreeSlotsList;

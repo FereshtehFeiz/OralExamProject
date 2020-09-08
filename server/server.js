@@ -224,21 +224,6 @@ app.post("/api/addSession", (req, res) => {
   }
 });
 
-//GET /bookedSlots
-app.get("/api/bookedSlots", (req, res) => {
-  const user = req.user && req.user.user;
-  taskDao
-    .getTasks(user, req.query.filter)
-    .then((tasks) => {
-      res.json(tasks);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ msg: err }],
-      });
-    });
-});
-
 //POST /exam
 app.post("/api/createExam", (req, res) => {
   const exam = req.body;
@@ -310,6 +295,42 @@ app.put("/api/oralExamItem/:slotId", (req, res) => {
     );
   console.log(result);
   // }
+});
+
+//GET /slots/<examId>
+app.get("/api/slots/:examId", (req, res) => {
+  timeslotDao
+    .getFreeExamSlots(req.params.examId)
+    .then((slots) => {
+      if (!slots) {
+        res.status(404).send();
+      } else {
+        res.json(slots);
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      });
+    });
+});
+
+//GET /bookedSlots/<examId>
+app.get("/api/bookedSlots/:studentId", (req, res) => {
+  studentDao
+    .getBookedSlots(req.params.studentId)
+    .then((slots) => {
+      if (!slots) {
+        res.status(404).send();
+      } else {
+        res.json(slots);
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      });
+    });
 });
 
 //activate server

@@ -12,9 +12,10 @@ import SelectRole from "./components/SelectRole";
 import CreateExam from "./components/CreateExam";
 import StudentExamsList from "./components/StudentExamsList";
 import DefineSession from "./components/DefineSession";
-import BookedSlots from "./components/BookedSlots";
+import BookedSlotsList from "./components/BookedSlotsList";
 import OralExamList from "./components/OralExamList";
 import ExamResult from "./components/ExamResult";
+import FreeSlotsList from "./components/FreeSlotsList";
 import API from "./api/API";
 import { Redirect, Route, Link } from "react-router-dom";
 import { Switch } from "react-router";
@@ -181,13 +182,23 @@ class App extends React.Component {
       });
   };
 
-  // getBookedSlots = () => {
-  //   API.getBookedSlots()
-  //     .then((bookedSlots) => this.setState({ bookedSlots: bookedSlots }))
-  //     .catch((errorObj) => {
-  //       this.handleErrors(errorObj);
-  //     });
-  // };
+  getFreeExamSlots = () => {
+    // console.log(studentId);
+    API.getFreeExamSlots()
+      .then((FreeSlots) => this.setState({ FreeSlots: FreeSlots }))
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
+
+  getBookedSlots = () => {
+    // console.log(studentId);
+    API.getBookedSlots(this.state.authStudent.studentId)
+      .then((BookedSlots) => this.setState({ BookedSlots: BookedSlots }))
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
 
   showSidebar = () => {
     this.setState((state) => ({ openMobileMenu: !state.openMobileMenu }));
@@ -292,6 +303,7 @@ class App extends React.Component {
           getStudentExams={this.getStudentExams}
           getOralExamTimeSlots={this.getOralExamTimeSlots}
           getResultView={this.getResultView}
+          getBookedSlots={this.getBookedSlots}
         />
 
         <Container fluid>
@@ -378,8 +390,19 @@ class App extends React.Component {
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
                   <h4>List of exams to book</h4>
+                  <StudentExamsList
+                    StudentExams={this.state.StudentExams}
+                    getFreeExamSlots={this.getFreeExamSlots}
+                  />
+                </Col>
+              </Row>
+            </Route>
 
-                  <StudentExamsList StudentExams={this.state.StudentExams} />
+            <Route path="/slots/:examId">
+              <Row className="vheight-100">
+                <Col className="below-nav">
+                  <h4>List of slots for booking</h4>
+                  <FreeSlotsList FreeSlots={this.state.FreeSlots} />
                 </Col>
               </Row>
             </Route>
@@ -405,12 +428,12 @@ class App extends React.Component {
               </Row>
             </Route>
 
-            <Route path="/bookings">
+            <Route path="/bookedSlots">
               <Row className="vheight-100">
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
                   <h4>My Booked Slots</h4>
-                  <BookedSlots bookedSlots={this.state.bookedSlots} />
+                  <BookedSlotsList BookedSlots={this.state.BookedSlots} />
                 </Col>
               </Row>
             </Route>

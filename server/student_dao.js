@@ -66,21 +66,19 @@ exports.getStudentExams = function (sid) {
 };
 
 /**
- * Get booked slots
+ * Get booked slots for student
  */
 exports.getBookedSlots = function (studentId) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT name,mark,slots.startTime,slots.date,slots.state" +
-      "FROM slots" +
-      "INNER JOIN student_exam on student_exam.eid = slots.eid INNER JOIN courses on courses.cid = student_exam.cid" +
-      "where slots.state = 0 or slots.state = 1 and studentId = ?;";
+      "SELECT * FROM student_exam INNER JOIN slots on slots.eid = student_exam.examId " +
+      "WHERE studentId = ? AND slots.state = 1";
     db.all(sql, [studentId], (err, rows) => {
       if (err) {
         reject(err);
       } else {
-        let bookingSlots = rows.map((row) => createBookingSlots(row));
-        resolve(bookingSlots);
+        let bookedSlots = rows.map((row) => createStudentExams(row));
+        resolve(bookedSlots);
       }
     });
   });
