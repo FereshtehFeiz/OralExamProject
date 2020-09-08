@@ -68,7 +68,7 @@ class OralExamItem extends React.Component {
             )}
           </td>
           <td>
-            {this.props.oralExamItem.withdraw === 1 ? (
+            {this.props.oralExamItem.withdraw === true ? (
               <span className="badge badge-warning">withdrawn</span>
             ) : (
               <span className="badge badge-success">Mark accepted</span>

@@ -3,6 +3,8 @@
 const Student = require("./student");
 const Exam = require("./exam");
 const StudentExam = require("./student_exam");
+const BookedSlots = require("./bookedSlots");
+
 const db = require("./db");
 
 const createStudent = function (row) {
@@ -13,6 +15,22 @@ const createStudentExams = function (row) {
   return new StudentExam(
     row.eid,
     row.studentId,
+    row.state,
+    row.mark,
+    row.slotId,
+    row.cid,
+    row.examId,
+    row.attendance,
+    row.withdraw,
+    row.name
+  );
+};
+
+const createBookedSlots = function (row) {
+  return new BookedSlots(
+    row.eid,
+    row.studentId,
+    row.date,
     row.state,
     row.mark,
     row.slotId,
@@ -68,17 +86,19 @@ exports.getStudentExams = function (sid) {
 /**
  * Get booked slots for student
  */
-exports.getBookedSlots = function (studentId) {
+exports.getBookedSlots = function (sid) {
   return new Promise((resolve, reject) => {
     const sql =
       "SELECT * FROM student_exam INNER JOIN slots on slots.eid = student_exam.examId " +
       "WHERE studentId = ? AND slots.state = 1";
-    db.all(sql, [studentId], (err, rows) => {
+    db.all(sql, [sid], (err, rows) => {
       if (err) {
+        console.log(err);
         reject(err);
       } else {
-        let bookedSlots = rows.map((row) => createStudentExams(row));
+        let bookedSlots = rows.map((row) => createBookedSlots(row));
         resolve(bookedSlots);
+        console.log(bookedSlots);
       }
     });
   });

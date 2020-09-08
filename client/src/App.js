@@ -148,24 +148,23 @@ class App extends React.Component {
     API.studentLogin(sid)
       .then((student) => {
         console.log(student);
-        // API.getStudentExams().then((studentExams) => {
-        // API.getBookedSlots()
-        //   .then((bookedSlots) => {
-        this.setState({
-          authStudent: student,
-          // studentExams: studentExams,
-          // bookedSlots: bookedSlots,
-          authUser: null,
-          authErr: null,
-          invalidSid: null,
+        API.getStudentExams().then((StudentExams) => {
+          // API.getBookedSlots().then((BookedSlots) => {
+          this.setState({
+            authStudent: student,
+            StudentExams: StudentExams,
+            // BookedSlots: BookedSlots,
+            authUser: null,
+            authErr: null,
+            invalidSid: null,
+          });
+          // });
         });
-        // });
-        // })
         // .catch((errorObj) => {
         //   this.handleErrors(errorObj);
         // });
 
-        this.props.history.push("/exams");
+        this.props.history.push("/StudentExams");
       })
       .catch((errorObj) => {
         const err0 = errorObj.errors[0];
@@ -256,6 +255,22 @@ class App extends React.Component {
     API.updateExam(examResult)
       .then(() => {})
 
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
+
+  cancelSlot = (slot) => {
+    //UPDATE
+    API.cancelSlot(slot)
+      .then(() => {
+        //get the updated list of slots from the server
+        API.getBookedSlots().then((BookedSlots) =>
+          this.setState({
+            BookedSlots: BookedSlots,
+          })
+        );
+      })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
@@ -430,10 +445,12 @@ class App extends React.Component {
 
             <Route path="/bookedSlots">
               <Row className="vheight-100">
-                <Col sm={4}></Col>
-                <Col sm={4} className="below-nav">
+                <Col className="below-nav">
                   <h4>My Booked Slots</h4>
-                  <BookedSlotsList BookedSlots={this.state.BookedSlots} />
+                  <BookedSlotsList
+                    BookedSlots={this.state.BookedSlots}
+                    cancelSlot={this.cancelSlot}
+                  />
                 </Col>
               </Row>
             </Route>

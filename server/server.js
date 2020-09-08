@@ -76,6 +76,40 @@ app.post("/api/studentlogin", (req, res) => {
     );
 });
 
+//PUT /Booked Slots/<taskId>
+app.put("/api/bookedSlots/:studentId", (req, res) => {
+  console.log(req.params.studentId);
+  timeslotDao
+    .updateBookedSlot(req.params.studentId)
+    .then((result) => res.status(200).end())
+    .catch((err) =>
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      })
+    );
+  // }
+});
+
+//GET /bookedSlots/<examId>
+app.get("/api/bookedSlots/:studentId", (req, res) => {
+  studentDao
+    .getBookedSlots(req.params.studentId)
+    .then((slots) => {
+      console.log(slots);
+      if (!slots) {
+        res.status(404).send();
+      } else {
+        res.json(slots);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      });
+    });
+});
+
 //get exams of student
 app.get("/api/StudentExams/:studentId", (req, res) => {
   console.log(req.params.studentId);
@@ -301,24 +335,6 @@ app.put("/api/oralExamItem/:slotId", (req, res) => {
 app.get("/api/slots/:examId", (req, res) => {
   timeslotDao
     .getFreeExamSlots(req.params.examId)
-    .then((slots) => {
-      if (!slots) {
-        res.status(404).send();
-      } else {
-        res.json(slots);
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ param: "Server", msg: err }],
-      });
-    });
-});
-
-//GET /bookedSlots/<examId>
-app.get("/api/bookedSlots/:studentId", (req, res) => {
-  studentDao
-    .getBookedSlots(req.params.studentId)
     .then((slots) => {
       if (!slots) {
         res.status(404).send();

@@ -6,6 +6,7 @@ import StudentExam from "./StudentExam";
 import TimeSlot from "./TimeSlot";
 import OralTimeSlot from "./OralTimeSlot";
 import Session from "./Session";
+import bookedSlots from "./bookedSlots";
 
 const baseURL = "/api";
 
@@ -405,25 +406,27 @@ async function getFreeExamSlots(examId) {
   }
 }
 
-async function getBookedSlots(studentId) {
-  console.log(studentId);
-  let url = "/bookedSlots/" + studentId;
+async function getBookedSlots(sid) {
+  console.log(sid);
+  let url = "/bookedSlots/" + sid;
   const response = await fetch(baseURL + url);
   const slotsJson = await response.json();
   if (response.ok) {
     //return tasksJson.map((t) => Task.from(t));
     return slotsJson.map(
       (t) =>
-        new OralTimeSlot(
-          t.slotId,
-          t.startTime,
+        new bookedSlots(
+          t.eid,
+          t.studentId,
           t.date,
           t.state,
-          t.studentId,
           t.mark,
+          t.slotId,
+          t.cid,
+          t.examId,
           t.attendance,
           t.withdraw,
-          t.cid
+          t.name
         )
     );
   } else {
@@ -431,6 +434,41 @@ async function getBookedSlots(studentId) {
     console.log(err);
     throw err; // An object with the error coming from the server
   }
+}
+
+async function cancelSlot(slot) {
+  return new Promise((resolve, reject) => {
+    console.log(slot.studentId);
+    fetch(baseURL + "/bookedSlots/" + slot.studentId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(slot),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("ok");
+        } else {
+          // analyze the cause of error
+          response
+            .json()
+            .then((obj) => {
+              reject(obj);
+            }) // error msg in the response body
+            .catch((err) => {
+              reject({
+                errors: [
+                  { param: "Application", msg: "Cannot parse server response" },
+                ],
+              });
+            }); // something else
+        }
+      })
+      .catch((err) => {
+        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
+      }); // connection errors
+  });
 }
 
 const API = {
@@ -445,11 +483,11 @@ const API = {
   getExamSlots,
   addSession,
   createExam,
-  getBookedSlots,
   getOralExamTimeSlots,
   updateExam,
   getResultView,
   getFreeExamSlots,
   getBookedSlots,
+  cancelSlot,
 };
 export default API;

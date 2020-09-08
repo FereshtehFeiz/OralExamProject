@@ -1,7 +1,8 @@
-class StudentExam {
+class bookedSlots {
   constructor(
     eid,
     studentId,
+    date,
     state,
     mark,
     slotId,
@@ -15,6 +16,7 @@ class StudentExam {
       this.eid = eid;
     }
     this.studentId = studentId;
+    this.date = date;
     this.state = state;
     this.mark = mark;
     this.slotId = slotId;
@@ -28,12 +30,12 @@ class StudentExam {
   /**
    * Construct a Task from a plain object
    * @param {{}} json
-   * @return {StudentExam} the newly created Task object
+   * @return {bookedSlots} the newly created Task object
    */
   static from(json) {
-    const t = Object.assign(new StudentExam(), json);
+    const t = Object.assign(new bookedSlots(), json);
     return t;
   }
 }
 
-export default StudentExam;
+export default bookedSlots;

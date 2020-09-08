@@ -77,3 +77,19 @@ exports.getFreeExamSlots = function (examId) {
     });
   });
 };
+
+/**
+ * Update an existing booked slot with a given exam id. new slot contains the new values of the slot (e.g., to mark it as "available")
+ */
+exports.updateBookedSlot = function (studentId) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "UPDATE slots SET state = 0 WHERE eid IN (SELECT examId FROM student_exam WHERE studentId = ?) and state = 1";
+    db.run(sql, [studentId], (err) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else resolve(null);
+    });
+  });
+};
