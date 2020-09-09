@@ -96,15 +96,19 @@ exports.updateBookedSlot = function (studentId) {
 /**
  * Book slot
  */
-exports.bookFreeSlot = function (slotId, studentId, examId) {
+exports.updateExamStudent = function (data) {
+  console.log(data);
+  const slotid = data.slotid;
+  const examid = data.examid;
+  const studentId = data.studentId;
   return new Promise((resolve, reject) => {
     const sql =
       "UPDATE student_exam SET slotId = ? WHERE studentId = ? AND examId = ? ;";
-    db.run(sql, [slotId, studentId, examId], (err) => {
+    db.run(sql, [slotid, studentId, examid], (err) => {
       if (err) {
         console.log(err);
         reject(err);
-      } else resolve(null);
+      } else resolve(true);
     });
   });
 };
@@ -118,8 +122,8 @@ exports.updateSlotState = function (slotId) {
     db.run(sql, [slotId], (err) => {
       if (err) {
         console.log(err);
-        reject(false);
-      } else resolve(true);
+        reject(0);
+      } else resolve(slotId);
     });
   });
 };

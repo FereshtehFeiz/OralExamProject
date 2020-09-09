@@ -32,19 +32,6 @@ app.use(morgan("tiny"));
 // Process body content
 app.use(express.json());
 
-
-app.put("/api/slots/:slotId", (req, res) => {
-  console.log(req.params);
-  timeslotDao
-    .updateSlotState(req.params.slotId)
-    .then((result) => console.log(result)) //res.status(200).end())
-    .catch((err) =>
-      res.status(500).json({
-        errors: [{ param: "Server", msg: err }],
-      })
-    );
-});
-
 // Authentication endpoint
 app.post("/api/studentlogin", (req, res) => {
   const sid = req.body.sid;
@@ -186,6 +173,34 @@ app.get("/api/exams/:examId", (req, res) => {
         errors: [{ param: "Server", msg: err }],
       });
     });
+});
+
+app.put("/api/slots/:slotId", (req, res) => {
+  timeslotDao
+    .updateSlotState(req.params.slotId)
+    .then((result) => {
+      res.status(200).json({ result })
+    })
+    .catch((err) =>
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      })
+    );
+});
+
+
+app.put("/api/exam_student/:slotId", (req, res) => {
+  timeslotDao
+    .updateExamStudent(req.body)
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ result })
+    })
+    .catch((err) =>
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      })
+    );
 });
 
 // Authentication endpoint
