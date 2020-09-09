@@ -499,6 +499,44 @@ async function bookSlot(slot) {
   });
 }
 
+
+async function bookExamSlot(slotId, examId, studentId) {
+  let date = { slotid: slotId, examid: examId, studentId: studentId };
+  return new Promise((resolve, reject) => {
+    // console.log(slot.examId);
+    fetch(baseURL + "/exam_student/" + slotId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(date)
+    })
+      .then((response) => {
+        if (response.ok) {
+          resolve(response.json());
+        } else {
+          // analyze the cause of error
+          response
+            .json()
+            .then((obj) => {
+              reject(obj);
+            }) // error msg in the response body
+            .catch((err) => {
+              reject({
+                errors: [
+                  { param: "Application", msg: "Cannot parse server response" },
+                ],
+              });
+            }); // something else
+        }
+      })
+      .catch((err) => {
+        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
+      }); // connection errors
+  });
+}
+
+
 async function setSlotState(slotId) {
   console.log(slotId);
   return new Promise((resolve, reject) => {
@@ -507,12 +545,11 @@ async function setSlotState(slotId) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify(1),
+      }
     })
       .then((response) => {
         if (response.ok) {
-          resolve(response);
+          resolve(response.json());
         } else {
           // analyze the cause of error
           response
@@ -555,5 +592,6 @@ const API = {
   cancelSlot,
   bookSlot,
   setSlotState,
+  bookExamSlot
 };
 export default API;

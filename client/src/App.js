@@ -246,7 +246,7 @@ class App extends React.Component {
 
   updateExam = (examResult) => {
     API.updateExam(examResult)
-      .then(() => {})
+      .then(() => { })
 
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -271,17 +271,15 @@ class App extends React.Component {
   };
 
   //book the free slot
-  bookSlot = (slotId) => {
+  bookSlot = (slotId, examId, studentId) => {
     //UPDATE
     API.setSlotState(slotId)
       .then((res) => {
-        console.log(res);
-        //get the updated list of slots from the server
-        // API.getBookedSlots().then((BookedSlots) =>
-        //   this.setState({
-        //     BookedSlots: BookedSlots,
-        //   })
-        // );
+        API.bookExamSlot(res.result, examId, studentId).then((res) => {
+          console.log(res.result);
+        }).catch((errorObj) => {
+          this.handleErrors(errorObj)
+        });
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -424,6 +422,7 @@ class App extends React.Component {
                       eid={match.params.examId}
                       FreeSlots={this.state.FreeSlots}
                       bookSlot={this.bookSlot}
+                      student={this.state.authStudent}
                     />
                   </Col>
                 </Row>

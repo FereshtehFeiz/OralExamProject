@@ -10,13 +10,17 @@ import API from "../api/API";
 class FreeSlotsList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { FreeSlots: [], selectedSlotId: 0 };
+    this.state = {
+      FreeSlots: [],
+      selectedSlotId: 0
+    };
   }
 
   componentDidMount() {
     API.getFreeExamSlots(this.props.eid)
       .then((FreeSlots) => this.setState({ FreeSlots: FreeSlots }))
       .catch((errorObj) => {
+        console.log(errorObj);
         this.handleErrors(errorObj);
       });
   }
@@ -47,9 +51,9 @@ class FreeSlotsList extends React.Component {
     if (!form.checkValidity()) {
       form.reportValidity();
     } else {
-      // let SelectedSlot = Object.assign({}, this.state);
       if (this.state.selectedSlotId > 0) {
-        this.props.bookSlot(this.state.selectedSlotId);
+        let student = Object.assign({}, this.props.student);
+        this.props.bookSlot(this.state.selectedSlotId, this.props.eid, student.studentId);
         this.setState({ submitted: true });
       }
     }
