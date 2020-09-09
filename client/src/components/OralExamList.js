@@ -20,7 +20,7 @@ const OralExamList = (props) => {
                   <th>Date</th>
                   <th>Attendance</th>
                   <th>Mark</th>
-                  <th>Withdraw</th>
+                  {/* <th>Withdraw</th> */}
                   <th>Take Exam</th>
                 </tr>
               </thead>

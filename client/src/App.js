@@ -147,22 +147,24 @@ class App extends React.Component {
   studentlogin = (sid) => {
     API.studentLogin(sid)
       .then((student) => {
-        console.log(student);
-        API.getStudentExams().then((StudentExams) => {
-          // API.getBookedSlots().then((BookedSlots) => {
-          this.setState({
-            authStudent: student,
-            StudentExams: StudentExams,
-            // BookedSlots: BookedSlots,
-            authUser: null,
-            authErr: null,
-            invalidSid: null,
-          });
+        // console.log(student);
+        API.getStudentExams(student.studentId)
+          .then((StudentExams) => {
+            // API.getFreeExamSlots().then((FreeSlots) => {
+            this.setState({
+              authStudent: student,
+              StudentExams: StudentExams,
+              // BookedSlots: BookedSlots,
+              // FreeSlots: FreeSlots,
+              authUser: null,
+              authErr: null,
+              invalidSid: null,
+            });
+          })
           // });
-        });
-        // .catch((errorObj) => {
-        //   this.handleErrors(errorObj);
-        // });
+          .catch((errorObj) => {
+            this.handleErrors(errorObj);
+          });
 
         this.props.history.push("/StudentExams");
       })
@@ -173,25 +175,16 @@ class App extends React.Component {
   };
 
   getStudentExams = () => {
-    // console.log(studentId);
     API.getStudentExams(this.state.authStudent.studentId)
-      .then((StudentExams) => this.setState({ StudentExams: StudentExams }))
-      .catch((errorObj) => {
-        this.handleErrors(errorObj);
-      });
-  };
-
-  getFreeExamSlots = () => {
-    // console.log(studentId);
-    API.getFreeExamSlots()
-      .then((FreeSlots) => this.setState({ FreeSlots: FreeSlots }))
+      .then((StudentExams) => {
+        this.setState({ StudentExams: StudentExams });
+      })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
       });
   };
 
   getBookedSlots = () => {
-    // console.log(studentId);
     API.getBookedSlots(this.state.authStudent.studentId)
       .then((BookedSlots) => this.setState({ BookedSlots: BookedSlots }))
       .catch((errorObj) => {
@@ -260,6 +253,7 @@ class App extends React.Component {
       });
   };
 
+  //cancel booked slot
   cancelSlot = (slot) => {
     //UPDATE
     API.cancelSlot(slot)
@@ -270,6 +264,24 @@ class App extends React.Component {
             BookedSlots: BookedSlots,
           })
         );
+      })
+      .catch((errorObj) => {
+        this.handleErrors(errorObj);
+      });
+  };
+
+  //book the free slot
+  bookSlot = (slotId) => {
+    //UPDATE
+    API.setSlotState(slotId)
+      .then((res) => {
+        console.log(res);
+        //get the updated list of slots from the server
+        // API.getBookedSlots().then((BookedSlots) =>
+        //   this.setState({
+        //     BookedSlots: BookedSlots,
+        //   })
+        // );
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -314,7 +326,6 @@ class App extends React.Component {
       <AuthContext.Provider value={value}>
         <Header
           showSidebar={this.showSidebar}
-          // getPublicTasks={this.getPublicTasks}
           getStudentExams={this.getStudentExams}
           getOralExamTimeSlots={this.getOralExamTimeSlots}
           getResultView={this.getResultView}
@@ -381,15 +392,6 @@ class App extends React.Component {
                   />
                 </Col>
               </Row>
-              {/* <Link to="/addSession">
-                <Button
-                  variant="success"
-                  size="lg"
-                  className="fixed-right-bottom"
-                  onClick={this.handleAddSession}
-                >&#43; Add Session
-                </Button>
-              </Link> */}
             </Route>
             <Route path="/studentLogin">
               <Row className="vheight-100">
@@ -405,22 +407,28 @@ class App extends React.Component {
                 <Col sm={4}></Col>
                 <Col sm={4} className="below-nav">
                   <h4>List of exams to book</h4>
-                  <StudentExamsList
-                    StudentExams={this.state.StudentExams}
-                    getFreeExamSlots={this.getFreeExamSlots}
-                  />
+                  <StudentExamsList StudentExams={this.state.StudentExams} />
                 </Col>
               </Row>
             </Route>
 
-            <Route path="/slots/:examId">
-              <Row className="vheight-100">
-                <Col className="below-nav">
-                  <h4>List of slots for booking</h4>
-                  <FreeSlotsList FreeSlots={this.state.FreeSlots} />
-                </Col>
-              </Row>
-            </Route>
+            <Route
+              exact
+              path="/slots/:examId"
+              render={({ match }) => (
+                <Row className="vheight-100">
+                  <Col sm={4}></Col>
+                  <Col sm={4} className="below-nav">
+                    <h4>List of slots for booking</h4>
+                    <FreeSlotsList
+                      eid={match.params.examId}
+                      FreeSlots={this.state.FreeSlots}
+                      bookSlot={this.bookSlot}
+                    />
+                  </Col>
+                </Row>
+              )}
+            />
 
             <Route path="/examSlots">
               <Row className="vheight-100">

@@ -283,7 +283,7 @@ async function createExam(exam) {
 }
 
 async function getOralExamTimeSlots(courseId) {
-  console.log(courseId);
+  // console.log(courseId);
   let url = "/examSlots/" + courseId;
   const response = await fetch(baseURL + url);
   const slotsJson = await response.json();
@@ -293,7 +293,6 @@ async function getOralExamTimeSlots(courseId) {
       (t) =>
         new OralTimeSlot(
           t.slotId,
-          t.startTime,
           t.date,
           t.state,
           t.studentId,
@@ -314,12 +313,8 @@ async function getOralExamTimeSlots(courseId) {
 
 async function updateExam(exam) {
   return new Promise((resolve, reject) => {
-    console.log(exam.slotId);
-
-    // let url = baseURL + "/oralExamItem/" + exam.slotId;
-    // const response = await fetch( url);
-
-    fetch(baseURL + "/oralExamItem/" + exam.slotId, {
+    console.log(exam.studentId);
+    fetch(baseURL + "/oralExamItem/" + exam.studentId, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -361,7 +356,6 @@ async function getResultView(courseId) {
       (t) =>
         new OralTimeSlot(
           t.slotId,
-          t.startTime,
           t.date,
           t.state,
           t.studentId,
@@ -379,7 +373,7 @@ async function getResultView(courseId) {
 }
 
 async function getFreeExamSlots(examId) {
-  console.log(examId);
+  // console.log(examId);
   let url = "/slots/" + examId;
   const response = await fetch(baseURL + url);
   const slotsJson = await response.json();
@@ -389,7 +383,6 @@ async function getFreeExamSlots(examId) {
       (t) =>
         new OralTimeSlot(
           t.slotId,
-          t.startTime,
           t.date,
           t.state,
           t.studentId,
@@ -448,7 +441,78 @@ async function cancelSlot(slot) {
     })
       .then((response) => {
         if (response.ok) {
-          console.log("ok");
+          resolve(response);
+        } else {
+          // analyze the cause of error
+          response
+            .json()
+            .then((obj) => {
+              reject(obj);
+            }) // error msg in the response body
+            .catch((err) => {
+              reject({
+                errors: [
+                  { param: "Application", msg: "Cannot parse server response" },
+                ],
+              });
+            }); // something else
+        }
+      })
+      .catch((err) => {
+        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
+      }); // connection errors
+  });
+}
+
+async function bookSlot(slot) {
+  return new Promise((resolve, reject) => {
+    console.log(slot.examId);
+    fetch(baseURL + "/slots/" + slot.examId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(slot),
+    })
+      .then((response) => {
+        if (response.ok) {
+          resolve(response);
+        } else {
+          // analyze the cause of error
+          response
+            .json()
+            .then((obj) => {
+              reject(obj);
+            }) // error msg in the response body
+            .catch((err) => {
+              reject({
+                errors: [
+                  { param: "Application", msg: "Cannot parse server response" },
+                ],
+              });
+            }); // something else
+        }
+      })
+      .catch((err) => {
+        reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] });
+      }); // connection errors
+  });
+}
+
+async function setSlotState(slotId) {
+  console.log(slotId);
+  return new Promise((resolve, reject) => {
+    // console.log(slot.examId);
+    fetch(baseURL + "/slots/" + slotId, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(1),
+    })
+      .then((response) => {
+        if (response.ok) {
+          resolve(response);
         } else {
           // analyze the cause of error
           response
@@ -489,5 +553,7 @@ const API = {
   getFreeExamSlots,
   getBookedSlots,
   cancelSlot,
+  bookSlot,
+  setSlotState,
 };
 export default API;

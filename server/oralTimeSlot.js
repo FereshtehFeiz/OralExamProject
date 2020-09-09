@@ -1,17 +1,6 @@
 class oralTimeSlot {
-  constructor(
-    slotId,
-    startTime,
-    date,
-    studentId,
-    state,
-    mark,
-    attendance,
-    withdraw,
-    cid
-  ) {
+  constructor(slotId, date, studentId, state, mark, attendance, withdraw, cid) {
     if (slotId) this.slotId = slotId;
-    this.startTime = startTime;
     this.date = date;
     this.studentId = studentId;
     this.state = state;

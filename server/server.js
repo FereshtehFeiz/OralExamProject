@@ -32,6 +32,19 @@ app.use(morgan("tiny"));
 // Process body content
 app.use(express.json());
 
+
+app.put("/api/slots/:slotId", (req, res) => {
+  console.log(req.params);
+  timeslotDao
+    .updateSlotState(req.params.slotId)
+    .then((result) => console.log(result)) //res.status(200).end())
+    .catch((err) =>
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      })
+    );
+});
+
 // Authentication endpoint
 app.post("/api/studentlogin", (req, res) => {
   const sid = req.body.sid;
@@ -76,6 +89,38 @@ app.post("/api/studentlogin", (req, res) => {
     );
 });
 
+//PUT /Book Slot for given slotId/<slotId>
+// app.put("/api/slots/:examId", (req, res) => {
+//   timeslotDao
+//     .bookFreeSlot(req.params.examId)
+//     .then((result) => res.status(200).end())
+//     .catch((err) =>
+//       res.status(500).json({
+//         errors: [{ param: "Server", msg: err }],
+//       })
+//     );
+// });
+
+
+
+//GET /slots/<examId>
+app.get("/api/slots/:examId", (req, res) => {
+  timeslotDao
+    .getFreeExamSlots(req.params.examId)
+    .then((slots) => {
+      if (!slots) {
+        res.status(404).send();
+      } else {
+        res.json(slots);
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        errors: [{ param: "Server", msg: err }],
+      });
+    });
+});
+
 //PUT /Booked Slots/<taskId>
 app.put("/api/bookedSlots/:studentId", (req, res) => {
   console.log(req.params.studentId);
@@ -87,7 +132,6 @@ app.put("/api/bookedSlots/:studentId", (req, res) => {
         errors: [{ param: "Server", msg: err }],
       })
     );
-  // }
 });
 
 //GET /bookedSlots/<examId>
@@ -310,43 +354,20 @@ app.get("/api/resultView/:courseId", (req, res) => {
     });
 });
 
-//PUT /oralExamItem/<slotId>  update mark and attendance for given slotId
-app.put("/api/oralExamItem/:slotId", (req, res) => {
-  // if (!req.body.id) {
-  //   res.status(400).end();
-  // } else {
+//PUT /oralExamItem/<studentId>  update mark and attendance for given slotId
+app.put("/api/oralExamItem/:studentId", (req, res) => {
   const exam = req.body;
-  // const user = req.user && req.user.user;
-  // task.user = user;
   console.log(exam);
+  console.log(req.params.studentId);
   studentDao
-    .updateExam(req.params.slotId, exam)
+    .updateExam(req.params.studentId, exam)
     .then(() => res.status(200).end())
     .catch((err) =>
       res.status(500).json({
         errors: [{ param: "Server", msg: err }],
       })
     );
-  console.log(result);
-  // }
-});
-
-//GET /slots/<examId>
-app.get("/api/slots/:examId", (req, res) => {
-  timeslotDao
-    .getFreeExamSlots(req.params.examId)
-    .then((slots) => {
-      if (!slots) {
-        res.status(404).send();
-      } else {
-        res.json(slots);
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        errors: [{ param: "Server", msg: err }],
-      });
-    });
+  // console.log(result);
 });
 
 //activate server

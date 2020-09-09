@@ -107,23 +107,18 @@ exports.getBookedSlots = function (sid) {
 /**
  * Update Mark and attendance
  */
-exports.updateExam = function (slotId, NewStudentExam) {
+exports.updateExam = function (studentId, NewStudentExam) {
   return new Promise((resolve, reject) => {
     const sql =
-      "UPDATE student_exam SET mark = ?, attendance = ?, withdraw = ? WHERE slotId = ?";
+      "UPDATE student_exam SET mark = ?, attendance = ? WHERE studentId = ?";
     db.run(
       sql,
-      [
-        NewStudentExam.mark,
-        NewStudentExam.attendance,
-        NewStudentExam.withdraw,
-        slotId,
-      ],
+      [NewStudentExam.mark, NewStudentExam.attendance, studentId],
       (err) => {
         if (err) {
           console.log(err);
           reject(err);
-        } else resolve(slotId);
+        } else resolve(true);
       }
     );
   });

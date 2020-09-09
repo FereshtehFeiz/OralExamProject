@@ -7,7 +7,6 @@ const moment = require("moment");
 const createExamSlots = function (row) {
   return new OralTimeSlot(
     row.slotId,
-    row.startTime,
     row.date,
     row.studentId,
     row.state,
@@ -19,7 +18,7 @@ const createExamSlots = function (row) {
 };
 
 /**
- * Get slots to take oral exam
+ * Get slots to take oral exam, Booked slots
  */
 exports.getExamSlots = function (cid) {
   return new Promise((resolve, reject) => {
@@ -65,7 +64,7 @@ exports.getResultView = function (cid) {
 exports.getFreeExamSlots = function (examId) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid WHERE eid = ? AND slots.state = 0";
+      "SELECT distinct date,slots.slotId FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid WHERE eid = ? AND slots.state = 0";
     db.all(sql, [examId], (err, rows) => {
       if (err) reject(err);
       else if (rows.length === 0) resolve(undefined);
@@ -79,7 +78,7 @@ exports.getFreeExamSlots = function (examId) {
 };
 
 /**
- * Update an existing booked slot with a given exam id. new slot contains the new values of the slot (e.g., to mark it as "available")
+ * Cancel the Booked slot
  */
 exports.updateBookedSlot = function (studentId) {
   return new Promise((resolve, reject) => {
@@ -90,6 +89,37 @@ exports.updateBookedSlot = function (studentId) {
         console.log(err);
         reject(err);
       } else resolve(null);
+    });
+  });
+};
+
+/**
+ * Book slot
+ */
+exports.bookFreeSlot = function (slotId, studentId, examId) {
+  return new Promise((resolve, reject) => {
+    const sql =
+      "UPDATE student_exam SET slotId = ? WHERE studentId = ? AND examId = ? ;";
+    db.run(sql, [slotId, studentId, examId], (err) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else resolve(null);
+    });
+  });
+};
+
+/**
+ * Set slot state = 1
+ */
+exports.updateSlotState = function (slotId) {
+  return new Promise((resolve, reject) => {
+    const sql = "UPDATE slots SET state = 1 WHERE slotId= ?";
+    db.run(sql, [slotId], (err) => {
+      if (err) {
+        console.log(err);
+        reject(false);
+      } else resolve(true);
     });
   });
 };

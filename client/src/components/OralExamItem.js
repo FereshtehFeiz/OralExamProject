@@ -20,11 +20,6 @@ class OralExamItem extends React.Component {
 
   updateField = (name, value) => {
     this.setState({ [name]: value });
-    if (value == "30L") {
-      this.setState({ ["mark"]: "30L" });
-    } else if (value == "Failed") {
-      this.setState({ ["mark"]: "0" });
-    }
   };
 
   handleSubmit = (event) => {
@@ -58,22 +53,22 @@ class OralExamItem extends React.Component {
           <td>{this.props.oralExamItem.date}</td>
           <td>
             {" "}
-            {this.props.oralExamItem.attendance === 0 ? "Absent" : "Present"}
+            {this.props.oralExamItem.attendance === true ? "Present" : "Absent"}
           </td>
           <td>
             {this.props.oralExamItem.mark === 0 ? (
-              <span className="badge badge-danger">Failed</span>
+              <span className="badge badge-danger">Undefined</span>
             ) : (
               this.props.oralExamItem.mark
             )}
           </td>
-          <td>
+          {/* <td>
             {this.props.oralExamItem.withdraw === true ? (
               <span className="badge badge-warning">withdrawn</span>
             ) : (
               <span className="badge badge-success">Mark accepted</span>
             )}
-          </td>
+          </td> */}
           <td>
             {" "}
             <Button variant="primary" onClick={this.showModal}>
@@ -104,31 +99,6 @@ class OralExamItem extends React.Component {
 
           <Modal.Body>
             <Form method="POST" onSubmit={(event) => this.handleSubmit(event)}>
-              <Form.Group controlId="Mark">
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                  <Form.Label>Exam Result</Form.Label>
-                  <Form.Control
-                    as="select"
-                    value={this.state.value}
-                    onChange={(ev) =>
-                      this.updateField(ev.target.name, ev.target.value)
-                    }
-                  >
-                    <option>Passed</option>
-                    <option>Failed</option>
-                    <option>30L</option>
-                  </Form.Control>
-                </Form.Group>
-                <Form.Label>Mark</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="mark"
-                  value={this.state.mark}
-                  onChange={(ev) =>
-                    this.updateField(ev.target.name, ev.target.value)
-                  }
-                />
-              </Form.Group>
               <Form.Group>
                 <div className="custom-control custom-checkbox">
                   <input
@@ -148,7 +118,35 @@ class OralExamItem extends React.Component {
                   </label>
                 </div>
               </Form.Group>
-              <Form.Group>
+              <Form.Group controlId="Mark">
+                <Form.Group controlId="exampleForm.ControlSelect1">
+                  <Form.Label>Exam Result</Form.Label>
+                  <Form.Control
+                    as="select"
+                    name="state"
+                    value={this.state.value}
+                    onChange={(ev) =>
+                      this.updateField(ev.target.name, ev.target.value)
+                    }
+                  >
+                    <option>Passed</option>
+                    <option>Failed</option>
+                    <option>30L</option>
+                    <option>Withdraw</option>
+                  </Form.Control>
+                </Form.Group>
+                <Form.Label>Mark</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="mark"
+                  value={this.state.mark}
+                  onChange={(ev) =>
+                    this.updateField(ev.target.name, ev.target.value)
+                  }
+                />
+              </Form.Group>
+
+              {/* <Form.Group>
                 <div className="custom-control custom-checkbox">
                   <input
                     value={this.state.withdraw}
@@ -166,7 +164,7 @@ class OralExamItem extends React.Component {
                     Mark is withdraw
                   </label>
                 </div>
-              </Form.Group>
+              </Form.Group> */}
               <Button variant="secondary" onClick={this.hideModal}>
                 Cancel
               </Button>
