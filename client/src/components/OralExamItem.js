@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { Redirect } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 
 class OralExamItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { show: false };
+    this.state = { show: false, examTake: false };
 
     if (this.props.oralExamItem) {
       this.state = { ...this.props.oralExamItem };
@@ -19,6 +20,7 @@ class OralExamItem extends React.Component {
   }
 
   updateField = (name, value) => {
+    console.log(name + value);
     this.setState({ [name]: value });
   };
 
@@ -32,7 +34,7 @@ class OralExamItem extends React.Component {
       let oralExamItem = Object.assign({}, this.state);
       console.log(oralExamItem);
       this.props.updateExam(oralExamItem);
-      this.setState({ submitted: true });
+      this.setState({ submitted: true, examTake: true });
     }
   };
 
@@ -53,7 +55,7 @@ class OralExamItem extends React.Component {
           <td>{this.props.oralExamItem.date}</td>
           <td>
             {" "}
-            {this.props.oralExamItem.attendance === true ? "Present" : "Absent"}
+            {this.props.oralExamItem.attendance === 1 ? "Present" : "Absent"}
           </td>
           <td>
             {this.props.oralExamItem.mark === 0 ? (
@@ -103,6 +105,7 @@ class OralExamItem extends React.Component {
                 <div className="custom-control custom-checkbox">
                   <input
                     value={this.state.attendance}
+                    name="attendance"
                     type="checkbox"
                     className="custom-control-input"
                     id={"check-t" + this.props.oralExamItem.slotId}
@@ -145,26 +148,11 @@ class OralExamItem extends React.Component {
                   }
                 />
               </Form.Group>
-
-              {/* <Form.Group>
-                <div className="custom-control custom-checkbox">
-                  <input
-                    value={this.state.withdraw}
-                    type="checkbox"
-                    className="custom-control-input"
-                    id={"check-t" + this.props.oralExamItem.withdraw}
-                    onChange={(ev) =>
-                      this.updateField(ev.target.name, ev.target.checked)
-                    }
-                  />
-                  <label
-                    className="custom-control-label"
-                    htmlFor={"check-t" + this.props.oralExamItem.withdraw}
-                  >
-                    Mark is withdraw
-                  </label>
-                </div>
-              </Form.Group> */}
+              <div className={this.state.examTake ? "visible" : "invisible"}>
+                <Alert variant="success">
+                  Mark has been saved successfully!
+                </Alert>
+              </div>
               <Button variant="secondary" onClick={this.hideModal}>
                 Cancel
               </Button>

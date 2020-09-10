@@ -227,6 +227,7 @@ class App extends React.Component {
   };
 
   getOralExamTimeSlots = () => {
+    console.log("get oral exam");
     API.getOralExamTimeSlots(this.state.courseId)
       .then((OralExams) => this.setState({ OralExams: OralExams }))
       .catch((errorObj) => {
@@ -245,8 +246,12 @@ class App extends React.Component {
   };
 
   updateExam = (examResult) => {
+    console.log("get oral exam2");
     API.updateExam(examResult)
-      .then(() => { })
+      .then(() => {
+        console.log("then");
+        this.getOralExamTimeSlots();
+      })
 
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -254,16 +259,12 @@ class App extends React.Component {
   };
 
   //cancel booked slot
-  cancelSlot = (slot) => {
+  cancelSlot = (examId, studentId) => {
     //UPDATE
-    API.cancelSlot(slot)
+    API.cancelSlot(examId, studentId)
       .then(() => {
         //get the updated list of slots from the server
-        API.getBookedSlots().then((BookedSlots) =>
-          this.setState({
-            BookedSlots: BookedSlots,
-          })
-        );
+        this.getBookedSlots();
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -275,11 +276,13 @@ class App extends React.Component {
     //UPDATE
     API.setSlotState(slotId)
       .then((res) => {
-        API.bookExamSlot(res.result, examId, studentId).then((res) => {
-          console.log(res.result);
-        }).catch((errorObj) => {
-          this.handleErrors(errorObj)
-        });
+        API.bookExamSlot(res.result, examId, studentId)
+          .then((res) => {
+            console.log(res.result);
+          })
+          .catch((errorObj) => {
+            this.handleErrors(errorObj);
+          });
       })
       .catch((errorObj) => {
         this.handleErrors(errorObj);
@@ -349,10 +352,6 @@ class App extends React.Component {
                 </Col>
               </Row>
             </Route>
-
-            {/* <Route>
-              <Redirect to="/students" />
-            </Route> */}
 
             <Route path="/createExam">
               <Row className="vheight-100">

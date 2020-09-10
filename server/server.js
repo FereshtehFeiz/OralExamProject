@@ -76,20 +76,6 @@ app.post("/api/studentlogin", (req, res) => {
     );
 });
 
-//PUT /Book Slot for given slotId/<slotId>
-// app.put("/api/slots/:examId", (req, res) => {
-//   timeslotDao
-//     .bookFreeSlot(req.params.examId)
-//     .then((result) => res.status(200).end())
-//     .catch((err) =>
-//       res.status(500).json({
-//         errors: [{ param: "Server", msg: err }],
-//       })
-//     );
-// });
-
-
-
 //GET /slots/<examId>
 app.get("/api/slots/:examId", (req, res) => {
   timeslotDao
@@ -108,11 +94,10 @@ app.get("/api/slots/:examId", (req, res) => {
     });
 });
 
-//PUT /Booked Slots/<taskId>
-app.put("/api/bookedSlots/:studentId", (req, res) => {
-  console.log(req.params.studentId);
+//PUT /Booked Slots/<examId>
+app.put("/api/bookedSlots/:examId", (req, res) => {
   timeslotDao
-    .updateBookedSlot(req.params.studentId)
+    .updateBookedSlot(req.body.studentId, req.params.examId)
     .then((result) => res.status(200).end())
     .catch((err) =>
       res.status(500).json({
@@ -121,7 +106,7 @@ app.put("/api/bookedSlots/:studentId", (req, res) => {
     );
 });
 
-//GET /bookedSlots/<examId>
+//GET /bookedSlots/<studentId>
 app.get("/api/bookedSlots/:studentId", (req, res) => {
   studentDao
     .getBookedSlots(req.params.studentId)
@@ -143,7 +128,6 @@ app.get("/api/bookedSlots/:studentId", (req, res) => {
 
 //get exams of student
 app.get("/api/StudentExams/:studentId", (req, res) => {
-  console.log(req.params.studentId);
   studentDao
     .getStudentExams(req.params.studentId)
     .then((exams) => {
@@ -179,7 +163,7 @@ app.put("/api/slots/:slotId", (req, res) => {
   timeslotDao
     .updateSlotState(req.params.slotId)
     .then((result) => {
-      res.status(200).json({ result })
+      res.status(200).json({ result });
     })
     .catch((err) =>
       res.status(500).json({
@@ -188,13 +172,12 @@ app.put("/api/slots/:slotId", (req, res) => {
     );
 });
 
-
 app.put("/api/exam_student/:slotId", (req, res) => {
   timeslotDao
     .updateExamStudent(req.body)
     .then((result) => {
       console.log(result);
-      res.status(200).json({ result })
+      res.status(200).json({ result });
     })
     .catch((err) =>
       res.status(500).json({
@@ -339,7 +322,7 @@ app.post("/api/createExam", (req, res) => {
 
 //GET /oral time slots for taking exam by teacher for given course Id
 app.get("/api/examSlots/:courseId", (req, res) => {
-  console.log(req.params.courseId);
+  // console.log(req.params.courseId);
   timeslotDao
     .getExamSlots(req.params.courseId)
     .then((timeslots) => {

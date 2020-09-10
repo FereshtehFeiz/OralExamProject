@@ -23,8 +23,8 @@ const createExamSlots = function (row) {
 exports.getExamSlots = function (cid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM student_exam INNER JOIN exams ON exams.eid = student_exam.examId INNER JOIN slots ON slots.eid = exams.eid " +
-      "WHERE slots.state = 1 and exams.cid = ?";
+      "SELECT * FROM student_exam INNER JOIN exams ON exams.eid = student_exam.examId " +
+      "INNER JOIN slots ON slots.eid = exams.eid WHERE exams.cid = ? AND student_exam.slotId is NOT NULL";
     db.all(sql, [cid], (err, rows) => {
       if (err) {
         console.log(err);
@@ -45,7 +45,8 @@ exports.getExamSlots = function (cid) {
 exports.getResultView = function (cid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid WHERE student_exam.cid = ?";
+      "SELECT * FROM slots INNER JOIN student_exam ON student_exam.examId = slots.eid " +
+      "INNER JOIN exams ON exams.eid = slots.eid  WHERE exams.cid = ? ;";
     db.all(sql, [cid], (err, rows) => {
       if (err) {
         reject(err);
@@ -78,26 +79,25 @@ exports.getFreeExamSlots = function (examId) {
 };
 
 /**
- * Cancel the Booked slot
+ * Cancel the Booked slot for the Given Exam Id, Update Slot ID to Null to become free
  */
-exports.updateBookedSlot = function (studentId) {
+exports.updateBookedSlot = function (studentId, examId) {
   return new Promise((resolve, reject) => {
     const sql =
-      "UPDATE slots SET state = 0 WHERE eid IN (SELECT examId FROM student_exam WHERE studentId = ?) and state = 1";
-    db.run(sql, [studentId], (err) => {
+      "UPDATE student_exam SET slotId = NULL WHERE studentId = ? AND examId = ? ;";
+    db.run(sql, [studentId, examId], (err) => {
       if (err) {
         console.log(err);
         reject(err);
-      } else resolve(null);
+      } else resolve(true);
     });
   });
 };
 
 /**
- * Book slot
+ * Book exam slot, put slot Id in the student exam
  */
 exports.updateExamStudent = function (data) {
-  console.log(data);
   const slotid = data.slotid;
   const examid = data.examid;
   const studentId = data.studentId;

@@ -5,6 +5,7 @@ import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import API from "../api/API";
 
 class FreeSlotsList extends React.Component {
@@ -12,7 +13,8 @@ class FreeSlotsList extends React.Component {
     super(props);
     this.state = {
       FreeSlots: [],
-      selectedSlotId: 0
+      selectedSlotId: 0,
+      bookingSaved: false,
     };
   }
 
@@ -53,8 +55,12 @@ class FreeSlotsList extends React.Component {
     } else {
       if (this.state.selectedSlotId > 0) {
         let student = Object.assign({}, this.props.student);
-        this.props.bookSlot(this.state.selectedSlotId, this.props.eid, student.studentId);
-        this.setState({ submitted: true });
+        this.props.bookSlot(
+          this.state.selectedSlotId,
+          this.props.eid,
+          student.studentId
+        );
+        this.setState({ submitted: true, bookingSaved: true });
       }
     }
   };
@@ -80,6 +86,11 @@ class FreeSlotsList extends React.Component {
                   </tr>
                 </thead>
               </Table>
+              <div
+                className={this.state.bookingSaved ? "visible" : "invisible"}
+              >
+                <Alert variant="success">Booking done successfully!</Alert>
+              </div>
               <Button variant="primary" type="submit">
                 Book
               </Button>

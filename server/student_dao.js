@@ -89,8 +89,8 @@ exports.getStudentExams = function (sid) {
 exports.getBookedSlots = function (sid) {
   return new Promise((resolve, reject) => {
     const sql =
-      "SELECT * FROM student_exam INNER JOIN slots on slots.eid = student_exam.examId " +
-      "WHERE studentId = ? AND slots.state = 1";
+      "SELECT studentId , examId , mark,attendance,withdraw , cid, student_exam.slotId , slots.date " +
+      "FROM student_exam INNER JOIN slots on slots.eid = student_exam.examId where studentId = ? AND student_exam.slotId is not NULL GROUP BY examId;";
     db.all(sql, [sid], (err, rows) => {
       if (err) {
         console.log(err);

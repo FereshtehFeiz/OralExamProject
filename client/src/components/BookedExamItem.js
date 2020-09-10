@@ -22,7 +22,11 @@ const BookedExamItem = (props) => {
           {bookedExamItem.attendance === false ? (
             <>
               {/* <Link to={`/bookedItem/${bookedExamItem.eid}`}> Cancel </Link> */}
-              <Link onClick={() => cancelSlot(bookedExamItem)}>
+              <Link
+                onClick={() =>
+                  cancelSlot(bookedExamItem.examId, bookedExamItem.studentId)
+                }
+              >
                 {" "}
                 Cancel Booking{" "}
               </Link>
